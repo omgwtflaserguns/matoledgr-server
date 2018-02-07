@@ -1,3 +1,4 @@
+//go:generate protoc -I ./contracts --go_out=plugins=grpc:./generated ./contracts/matoledgr.proto
 
 package main
 
