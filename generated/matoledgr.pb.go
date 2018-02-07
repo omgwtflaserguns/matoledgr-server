@@ -10,6 +10,13 @@ It is generated from these files:
 It has these top-level messages:
 	HelloRequest
 	HelloReply
+	ProductRequest
+	ProductList
+	Product
+	BuyRequest
+	BuyResponse
+	LoginRequest
+	LoginResponse
 */
 package matoledgr
 
@@ -32,6 +39,48 @@ var _ = math.Inf
 // A compilation error at this line likely means your copy of the
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
+
+type BuyResponse_Status int32
+
+const (
+	BuyResponse_OK     BuyResponse_Status = 0
+	BuyResponse_FAILED BuyResponse_Status = 1
+)
+
+var BuyResponse_Status_name = map[int32]string{
+	0: "OK",
+	1: "FAILED",
+}
+var BuyResponse_Status_value = map[string]int32{
+	"OK":     0,
+	"FAILED": 1,
+}
+
+func (x BuyResponse_Status) String() string {
+	return proto.EnumName(BuyResponse_Status_name, int32(x))
+}
+func (BuyResponse_Status) EnumDescriptor() ([]byte, []int) { return fileDescriptor0, []int{6, 0} }
+
+type LoginResponse_Status int32
+
+const (
+	LoginResponse_OK     LoginResponse_Status = 0
+	LoginResponse_FAILED LoginResponse_Status = 1
+)
+
+var LoginResponse_Status_name = map[int32]string{
+	0: "OK",
+	1: "FAILED",
+}
+var LoginResponse_Status_value = map[string]int32{
+	"OK":     0,
+	"FAILED": 1,
+}
+
+func (x LoginResponse_Status) String() string {
+	return proto.EnumName(LoginResponse_Status_name, int32(x))
+}
+func (LoginResponse_Status) EnumDescriptor() ([]byte, []int) { return fileDescriptor0, []int{8, 0} }
 
 type HelloRequest struct {
 	Name string `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
@@ -65,9 +114,138 @@ func (m *HelloReply) GetMessage() string {
 	return ""
 }
 
+type ProductRequest struct {
+}
+
+func (m *ProductRequest) Reset()                    { *m = ProductRequest{} }
+func (m *ProductRequest) String() string            { return proto.CompactTextString(m) }
+func (*ProductRequest) ProtoMessage()               {}
+func (*ProductRequest) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{2} }
+
+type ProductList struct {
+	Products []*Product `protobuf:"bytes,1,rep,name=products" json:"products,omitempty"`
+}
+
+func (m *ProductList) Reset()                    { *m = ProductList{} }
+func (m *ProductList) String() string            { return proto.CompactTextString(m) }
+func (*ProductList) ProtoMessage()               {}
+func (*ProductList) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{3} }
+
+func (m *ProductList) GetProducts() []*Product {
+	if m != nil {
+		return m.Products
+	}
+	return nil
+}
+
+type Product struct {
+	Id    int32   `protobuf:"varint,1,opt,name=id" json:"id,omitempty"`
+	Name  string  `protobuf:"bytes,2,opt,name=name" json:"name,omitempty"`
+	Price float32 `protobuf:"fixed32,3,opt,name=price" json:"price,omitempty"`
+}
+
+func (m *Product) Reset()                    { *m = Product{} }
+func (m *Product) String() string            { return proto.CompactTextString(m) }
+func (*Product) ProtoMessage()               {}
+func (*Product) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{4} }
+
+func (m *Product) GetId() int32 {
+	if m != nil {
+		return m.Id
+	}
+	return 0
+}
+
+func (m *Product) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *Product) GetPrice() float32 {
+	if m != nil {
+		return m.Price
+	}
+	return 0
+}
+
+type BuyRequest struct {
+	ProductId int32 `protobuf:"varint,1,opt,name=productId" json:"productId,omitempty"`
+	Count     int32 `protobuf:"varint,2,opt,name=count" json:"count,omitempty"`
+}
+
+func (m *BuyRequest) Reset()                    { *m = BuyRequest{} }
+func (m *BuyRequest) String() string            { return proto.CompactTextString(m) }
+func (*BuyRequest) ProtoMessage()               {}
+func (*BuyRequest) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{5} }
+
+func (m *BuyRequest) GetProductId() int32 {
+	if m != nil {
+		return m.ProductId
+	}
+	return 0
+}
+
+func (m *BuyRequest) GetCount() int32 {
+	if m != nil {
+		return m.Count
+	}
+	return 0
+}
+
+type BuyResponse struct {
+}
+
+func (m *BuyResponse) Reset()                    { *m = BuyResponse{} }
+func (m *BuyResponse) String() string            { return proto.CompactTextString(m) }
+func (*BuyResponse) ProtoMessage()               {}
+func (*BuyResponse) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{6} }
+
+type LoginRequest struct {
+	User     string `protobuf:"bytes,1,opt,name=user" json:"user,omitempty"`
+	Password string `protobuf:"bytes,2,opt,name=password" json:"password,omitempty"`
+}
+
+func (m *LoginRequest) Reset()                    { *m = LoginRequest{} }
+func (m *LoginRequest) String() string            { return proto.CompactTextString(m) }
+func (*LoginRequest) ProtoMessage()               {}
+func (*LoginRequest) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{7} }
+
+func (m *LoginRequest) GetUser() string {
+	if m != nil {
+		return m.User
+	}
+	return ""
+}
+
+func (m *LoginRequest) GetPassword() string {
+	if m != nil {
+		return m.Password
+	}
+	return ""
+}
+
+type LoginResponse struct {
+}
+
+func (m *LoginResponse) Reset()                    { *m = LoginResponse{} }
+func (m *LoginResponse) String() string            { return proto.CompactTextString(m) }
+func (*LoginResponse) ProtoMessage()               {}
+func (*LoginResponse) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{8} }
+
 func init() {
 	proto.RegisterType((*HelloRequest)(nil), "matoledgr.HelloRequest")
 	proto.RegisterType((*HelloReply)(nil), "matoledgr.HelloReply")
+	proto.RegisterType((*ProductRequest)(nil), "matoledgr.ProductRequest")
+	proto.RegisterType((*ProductList)(nil), "matoledgr.ProductList")
+	proto.RegisterType((*Product)(nil), "matoledgr.Product")
+	proto.RegisterType((*BuyRequest)(nil), "matoledgr.BuyRequest")
+	proto.RegisterType((*BuyResponse)(nil), "matoledgr.BuyResponse")
+	proto.RegisterType((*LoginRequest)(nil), "matoledgr.LoginRequest")
+	proto.RegisterType((*LoginResponse)(nil), "matoledgr.LoginResponse")
+	proto.RegisterEnum("matoledgr.BuyResponse_Status", BuyResponse_Status_name, BuyResponse_Status_value)
+	proto.RegisterEnum("matoledgr.LoginResponse_Status", LoginResponse_Status_name, LoginResponse_Status_value)
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -142,17 +320,226 @@ var _Greeter_serviceDesc = grpc.ServiceDesc{
 	Metadata: "matoledgr.proto",
 }
 
+// Client API for Products service
+
+type ProductsClient interface {
+	ListProducts(ctx context.Context, in *ProductRequest, opts ...grpc.CallOption) (*ProductList, error)
+}
+
+type productsClient struct {
+	cc *grpc.ClientConn
+}
+
+func NewProductsClient(cc *grpc.ClientConn) ProductsClient {
+	return &productsClient{cc}
+}
+
+func (c *productsClient) ListProducts(ctx context.Context, in *ProductRequest, opts ...grpc.CallOption) (*ProductList, error) {
+	out := new(ProductList)
+	err := grpc.Invoke(ctx, "/matoledgr.Products/ListProducts", in, out, c.cc, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// Server API for Products service
+
+type ProductsServer interface {
+	ListProducts(context.Context, *ProductRequest) (*ProductList, error)
+}
+
+func RegisterProductsServer(s *grpc.Server, srv ProductsServer) {
+	s.RegisterService(&_Products_serviceDesc, srv)
+}
+
+func _Products_ListProducts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProductRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProductsServer).ListProducts(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/matoledgr.Products/ListProducts",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductsServer).ListProducts(ctx, req.(*ProductRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+var _Products_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "matoledgr.Products",
+	HandlerType: (*ProductsServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "ListProducts",
+			Handler:    _Products_ListProducts_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "matoledgr.proto",
+}
+
+// Client API for Transaction service
+
+type TransactionClient interface {
+	Buy(ctx context.Context, in *BuyRequest, opts ...grpc.CallOption) (*BuyResponse, error)
+}
+
+type transactionClient struct {
+	cc *grpc.ClientConn
+}
+
+func NewTransactionClient(cc *grpc.ClientConn) TransactionClient {
+	return &transactionClient{cc}
+}
+
+func (c *transactionClient) Buy(ctx context.Context, in *BuyRequest, opts ...grpc.CallOption) (*BuyResponse, error) {
+	out := new(BuyResponse)
+	err := grpc.Invoke(ctx, "/matoledgr.Transaction/Buy", in, out, c.cc, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// Server API for Transaction service
+
+type TransactionServer interface {
+	Buy(context.Context, *BuyRequest) (*BuyResponse, error)
+}
+
+func RegisterTransactionServer(s *grpc.Server, srv TransactionServer) {
+	s.RegisterService(&_Transaction_serviceDesc, srv)
+}
+
+func _Transaction_Buy_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BuyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TransactionServer).Buy(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/matoledgr.Transaction/Buy",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TransactionServer).Buy(ctx, req.(*BuyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+var _Transaction_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "matoledgr.Transaction",
+	HandlerType: (*TransactionServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "Buy",
+			Handler:    _Transaction_Buy_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "matoledgr.proto",
+}
+
+// Client API for Account service
+
+type AccountClient interface {
+	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
+}
+
+type accountClient struct {
+	cc *grpc.ClientConn
+}
+
+func NewAccountClient(cc *grpc.ClientConn) AccountClient {
+	return &accountClient{cc}
+}
+
+func (c *accountClient) Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error) {
+	out := new(LoginResponse)
+	err := grpc.Invoke(ctx, "/matoledgr.Account/Login", in, out, c.cc, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// Server API for Account service
+
+type AccountServer interface {
+	Login(context.Context, *LoginRequest) (*LoginResponse, error)
+}
+
+func RegisterAccountServer(s *grpc.Server, srv AccountServer) {
+	s.RegisterService(&_Account_serviceDesc, srv)
+}
+
+func _Account_Login_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LoginRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AccountServer).Login(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/matoledgr.Account/Login",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AccountServer).Login(ctx, req.(*LoginRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+var _Account_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "matoledgr.Account",
+	HandlerType: (*AccountServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "Login",
+			Handler:    _Account_Login_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "matoledgr.proto",
+}
+
 func init() { proto.RegisterFile("matoledgr.proto", fileDescriptor0) }
 
 var fileDescriptor0 = []byte{
-	// 142 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0xcf, 0x4d, 0x2c, 0xc9,
-	0xcf, 0x49, 0x4d, 0x49, 0x2f, 0xd2, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0xe2, 0x84, 0x0b, 0x28,
-	0x29, 0x71, 0xf1, 0x78, 0xa4, 0xe6, 0xe4, 0xe4, 0x07, 0xa5, 0x16, 0x96, 0xa6, 0x16, 0x97, 0x08,
-	0x09, 0x71, 0xb1, 0xe4, 0x25, 0xe6, 0xa6, 0x4a, 0x30, 0x2a, 0x30, 0x6a, 0x70, 0x06, 0x81, 0xd9,
-	0x4a, 0x6a, 0x5c, 0x5c, 0x50, 0x35, 0x05, 0x39, 0x95, 0x42, 0x12, 0x5c, 0xec, 0xb9, 0xa9, 0xc5,
-	0xc5, 0x89, 0xe9, 0x30, 0x45, 0x30, 0xae, 0x91, 0x3b, 0x17, 0xbb, 0x7b, 0x51, 0x6a, 0x6a, 0x49,
-	0x6a, 0x91, 0x90, 0x0d, 0x17, 0x47, 0x70, 0x62, 0x25, 0x58, 0x97, 0x90, 0xb8, 0x1e, 0xc2, 0x7e,
-	0x64, 0xbb, 0xa4, 0x44, 0x31, 0x25, 0x0a, 0x72, 0x2a, 0x95, 0x18, 0x92, 0xd8, 0xc0, 0xce, 0x34,
-	0x06, 0x04, 0x00, 0x00, 0xff, 0xff, 0xfb, 0x3e, 0x93, 0xf2, 0xb9, 0x00, 0x00, 0x00,
+	// 402 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x52, 0x4d, 0xab, 0xd3, 0x40,
+	0x14, 0x4d, 0x52, 0x93, 0xa6, 0x37, 0xf5, 0x59, 0x2e, 0x7e, 0xc4, 0xf2, 0x16, 0x65, 0x16, 0x52,
+	0x10, 0xbb, 0x88, 0xe0, 0xea, 0x29, 0xbe, 0xf7, 0xac, 0xb5, 0x58, 0xa8, 0xa4, 0xfe, 0x81, 0x31,
+	0x19, 0x4a, 0x20, 0xcd, 0xc4, 0x99, 0x09, 0x92, 0x7f, 0x2f, 0x99, 0x4e, 0x3e, 0x4a, 0x5d, 0xb8,
+	0x9b, 0x73, 0x3f, 0xce, 0xbd, 0xf7, 0x9c, 0x81, 0x67, 0x27, 0xaa, 0x78, 0xce, 0xd2, 0xa3, 0x58,
+	0x95, 0x82, 0x2b, 0x8e, 0x93, 0x2e, 0x40, 0x08, 0x4c, 0xbf, 0xb1, 0x3c, 0xe7, 0x31, 0xfb, 0x5d,
+	0x31, 0xa9, 0x10, 0xe1, 0x49, 0x41, 0x4f, 0x2c, 0xb4, 0x17, 0xf6, 0x72, 0x12, 0xeb, 0x37, 0x79,
+	0x03, 0x60, 0x6a, 0xca, 0xbc, 0xc6, 0x10, 0xc6, 0x27, 0x26, 0x25, 0x3d, 0xb6, 0x45, 0x2d, 0x24,
+	0x33, 0xb8, 0xf9, 0x21, 0x78, 0x5a, 0x25, 0xca, 0xb0, 0x91, 0x8f, 0x10, 0x98, 0xc8, 0x2e, 0x93,
+	0x0a, 0x57, 0xe0, 0x97, 0x67, 0x28, 0x43, 0x7b, 0x31, 0x5a, 0x06, 0x11, 0xae, 0xfa, 0xdd, 0xda,
+	0xde, 0xae, 0x86, 0x3c, 0xc2, 0xd8, 0x04, 0xf1, 0x06, 0x9c, 0x2c, 0xd5, 0x03, 0xdd, 0xd8, 0xc9,
+	0xd2, 0x6e, 0x4f, 0xa7, 0xdf, 0x13, 0x9f, 0x83, 0x5b, 0x8a, 0x2c, 0x61, 0xe1, 0x68, 0x61, 0x2f,
+	0x9d, 0xf8, 0x0c, 0xc8, 0x67, 0x80, 0x87, 0xaa, 0x6e, 0xef, 0xbb, 0x85, 0x89, 0xa1, 0xdf, 0xb6,
+	0x74, 0x7d, 0xa0, 0x61, 0x48, 0x78, 0x55, 0x28, 0x4d, 0xeb, 0xc6, 0x67, 0x40, 0xde, 0x42, 0xa0,
+	0x19, 0x64, 0xc9, 0x0b, 0xc9, 0xc8, 0x2d, 0x78, 0x07, 0x45, 0x55, 0x25, 0xd1, 0x03, 0x67, 0xff,
+	0x7d, 0x66, 0x21, 0x80, 0xf7, 0xf5, 0x7e, 0xbb, 0x5b, 0x7f, 0x99, 0xd9, 0xe4, 0x13, 0x4c, 0x77,
+	0xfc, 0x98, 0x15, 0x03, 0x41, 0x2b, 0xc9, 0x44, 0x2b, 0x68, 0xf3, 0xc6, 0x39, 0xf8, 0x25, 0x95,
+	0xf2, 0x0f, 0x17, 0xa9, 0x39, 0xa0, 0xc3, 0xe4, 0x1d, 0x3c, 0x35, 0xfd, 0xff, 0x33, 0x2e, 0xda,
+	0xc0, 0x78, 0x23, 0x18, 0x53, 0x4c, 0xe0, 0x1d, 0xf8, 0x07, 0x5a, 0x6b, 0xa7, 0xf0, 0xd5, 0x40,
+	0xd7, 0xa1, 0xbf, 0xf3, 0x17, 0xd7, 0x89, 0x32, 0xaf, 0x89, 0x15, 0xed, 0xc1, 0x37, 0x5a, 0x4b,
+	0x7c, 0x84, 0x69, 0xe3, 0x57, 0x87, 0x5f, 0xff, 0xc3, 0x25, 0xc3, 0xf7, 0xf2, 0x3a, 0xd5, 0xb4,
+	0x12, 0x2b, 0x5a, 0x43, 0xf0, 0x53, 0xd0, 0x42, 0xd2, 0x44, 0x65, 0xbc, 0xc0, 0x0f, 0x30, 0x7a,
+	0xa8, 0x6a, 0x1c, 0xce, 0xef, 0x6d, 0xb9, 0xa0, 0x19, 0x6a, 0x6d, 0x35, 0x07, 0xde, 0x27, 0xda,
+	0x07, 0xbc, 0x03, 0x57, 0x4b, 0x73, 0x71, 0xdd, 0x50, 0xec, 0x79, 0x78, 0x9d, 0x68, 0x89, 0x7e,
+	0x79, 0xfa, 0xef, 0xbf, 0xff, 0x1b, 0x00, 0x00, 0xff, 0xff, 0x3c, 0x84, 0x1d, 0x99, 0x0e, 0x03,
+	0x00, 0x00,
 }
