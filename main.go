@@ -11,11 +11,14 @@ import (
 	"github.com/improbable-eng/grpc-web/go/grpcweb"
 	"github.com/rs/cors"
 	"google.golang.org/grpc/reflection"
+	_ "github.com/mattn/go-sqlite3"
 	pb "github.com/omgwtflaserguns/matoledgr-server/generated"
 	"fmt"
 	"sync"
 	"os"
 	"time"
+	"github.com/omgwtflaserguns/matoledgr-server/db"
+	"database/sql"
 )
 
 const (
@@ -25,9 +28,34 @@ const (
 type server struct{}
 
 var wg sync.WaitGroup
+var dbCon *sql.DB
 
 func (s *server) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
 	return &pb.HelloReply{Message: "Fuck off " + in.Name}, nil
+}
+
+func (s *server) ListProducts(ctx context.Context, in *pb.ProductRequest) (*pb.ProductList, error) {
+	rows, err := dbCon.Query("SELECT id, name, price FROM PRODUCT")
+
+	if err != nil {
+		panic(err)
+	}
+
+	products := []*pb.Product{}
+	for rows.Next() {
+
+		var id int32
+		var name string
+		var price float32
+
+		err = rows.Scan(&id, &name, &price)
+		if err != nil {
+			fmt.Println("Scan: %v", err)
+		}
+		products = append(products, &pb.Product{Id: id, Name: name, Price: price})
+	}
+
+	return &pb.ProductList{Products: products}, nil
 }
 
 func createGrpcServer() (*grpc.Server, net.Listener)  {
@@ -39,6 +67,8 @@ func createGrpcServer() (*grpc.Server, net.Listener)  {
 
 	grpcServer := grpc.NewServer()
 	pb.RegisterGreeterServer(grpcServer, &server{})
+	pb.RegisterProductsServer(grpcServer, &server{})
+
 	// Register reflection service on gRPC server.
 	reflection.Register(grpcServer)
 
@@ -110,6 +140,9 @@ func runGrpcServer(grpcServer *grpc.Server, listener net.Listener) {
 }
 
 func main() {
+	//TODO Read Database file as command line argument
+	dbCon = db.Connect("./matoledgr.db")
+
 	fmt.Println("Server spinning up...")
 
 	grpcServer, listener := createGrpcServer()
