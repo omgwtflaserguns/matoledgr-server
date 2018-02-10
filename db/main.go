@@ -2,12 +2,12 @@ package db
 
 import (
 	"database/sql"
-	"fmt"
-	"log"
 	"os"
+	"github.com/op/go-logging"
 )
 
 var path = ""
+var logger = logging.MustGetLogger("log")
 
 func Connect(databasePath string) *sql.DB {
 	path = databasePath
@@ -17,15 +17,15 @@ func Connect(databasePath string) *sql.DB {
 	if isNewDB {
 		initializeDatabase(db)
 	}
-
 	return db
 }
 
 func createIfNotFound() bool {
+	logger.Debug("Searching databse in %s", path)
 	_, err := os.Stat(path)
 
 	if os.IsNotExist(err) {
-		fmt.Println("Database not found, creating...")
+		logger.Debug("database not found, creating...")
 		file, err := os.Create(path)
 		if err != nil {
 			panic(err)
@@ -37,7 +37,7 @@ func createIfNotFound() bool {
 }
 
 func initializeDatabase(db *sql.DB) {
-	fmt.Println("Creating Tables...")
+	logger.Debug("initializing db...")
 	_, err := db.Exec("CREATE TABLE Product (" +
 		"id INTEGER PRIMARY KEY AUTOINCREMENT, " +
 		"name VARCHAR(64), " +
@@ -48,7 +48,7 @@ func initializeDatabase(db *sql.DB) {
 		panic(err)
 	}
 
-	fmt.Println("Inserting Data...")
+	logger.Debug("Inserting data...")
 	_, err = db.Exec("INSERT INTO Product (name, price)" +
 		" VALUES ('Club Mate', 0.75);")
 
@@ -60,7 +60,7 @@ func initializeDatabase(db *sql.DB) {
 func openDatabase() *sql.DB {
 	db, err := sql.Open("sqlite3", path)
 	if err != nil {
-		log.Fatalf("Failed DB open: %v", err)
+		logger.Fatalf("Failed to open db: %s %v", path, err)
 		panic(err)
 	}
 	return db

@@ -27,6 +27,12 @@
   version = "v1.6.0"
 
 [[projects]]
+  name = "github.com/op/go-logging"
+  packages = ["."]
+  revision = "b2cb9fa56473e98db8caba80237377e83fe44db5"
+  version = "v1"
+
+[[projects]]
   name = "github.com/rs/cors"
   packages = ["."]
   revision = "7af7a1e09ba336d2ea14b1ce73bf693c6837dbf6"
@@ -107,6 +113,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "462b715adda9523cea18720f71f5502051edc426b76ebcea9ae770e57fbc997b"
+  inputs-digest = "15b623531e794be505417b965fad8cd23e8261b8cecbb2275c39d1a7f68cdb56"
   solver-name = "gps-cdcl"
   solver-version = 1
