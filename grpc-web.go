@@ -14,11 +14,13 @@ func wrapGrpcServer(grpcServer *grpc.Server) {
 
 	grpcHttpHandler := http.HandlerFunc(func(resp http.ResponseWriter, req *http.Request) {
 
-		logger.Debugf("http: %s %s %s \n", req.Method, req.Proto, req.RequestURI)
+
 
 		if wrappedGrpc.IsGrpcWebRequest(req) {
-			logger.Debug("grpc request detected")
+			logger.Debugf("grpc: %s", req.RequestURI)
 			wrappedGrpc.ServeHTTP(resp, req)
+		} else {
+			logger.Debugf("http: %s %s %s", req.Method, req.Proto, req.RequestURI)
 		}
 
 		// Fall back to other servers.
