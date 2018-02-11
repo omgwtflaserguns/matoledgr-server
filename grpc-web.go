@@ -1,10 +1,10 @@
 package main
 
 import (
-	"google.golang.org/grpc"
 	"github.com/improbable-eng/grpc-web/go/grpcweb"
-	"net/http"
 	"github.com/rs/cors"
+	"google.golang.org/grpc"
+	"net/http"
 	"time"
 )
 
@@ -13,8 +13,6 @@ func wrapGrpcServer(grpcServer *grpc.Server) {
 	wrappedGrpc := grpcweb.WrapServer(grpcServer, grpcweb.WithAllowedRequestHeaders([]string{"*"}))
 
 	grpcHttpHandler := http.HandlerFunc(func(resp http.ResponseWriter, req *http.Request) {
-
-
 
 		if wrappedGrpc.IsGrpcWebRequest(req) {
 			logger.Debugf("grpc: %s", req.RequestURI)
@@ -31,27 +29,23 @@ func wrapGrpcServer(grpcServer *grpc.Server) {
 		// TODO harden this
 		AllowedOrigins: []string{"*"},
 		AllowedHeaders: []string{"X-Grpc-Web", "Content-Type"},
-		// TODO Read that from commandline
-		Debug: false,
+		Debug:          config.debugCors,
 	})
 
 	httpServer := &http.Server{
-		// TODO Read that port from commandline
-		Addr:           ":8080",
-		Handler: 		c.Handler(grpcHttpHandler),
+		Addr:           config.grpcWeb.address,
+		Handler:        c.Handler(grpcHttpHandler),
 		ReadTimeout:    3 * time.Second,
 		WriteTimeout:   3 * time.Second,
-		IdleTimeout: 3 * time.Second,
+		IdleTimeout:    3 * time.Second,
 		MaxHeaderBytes: 1 << 20,
 		// ErrorLog: logger, TODO maybe add error log?
 	}
 
-	logger.Debug("Http Server start listening...")
-
 	wg.Add(1)
 	go runHttpServer(httpServer)
 
-	logger.Debug("Http Server started")
+	logger.Debug("gRPC-web Server started at %s", config.grpcWeb.address)
 }
 
 func runHttpServer(httpServer *http.Server) {

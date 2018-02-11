@@ -2,21 +2,22 @@ package db
 
 import (
 	"database/sql"
-	"os"
 	"github.com/op/go-logging"
+	"os"
 )
 
 var path = ""
 var logger = logging.MustGetLogger("log")
 
 func Connect(databasePath string) *sql.DB {
+	logger.Debugf("connecting to database %s", databasePath)
 	path = databasePath
 	isNewDB := createIfNotFound()
 	db := openDatabase()
-
 	if isNewDB {
 		initializeDatabase(db)
 	}
+	logger.Debug("database connected")
 	return db
 }
 
@@ -28,7 +29,7 @@ func createIfNotFound() bool {
 		logger.Debug("database not found, creating...")
 		file, err := os.Create(path)
 		if err != nil {
-			panic(err)
+			logger.Panic(err)
 		}
 		file.Close()
 		return true
@@ -45,7 +46,7 @@ func initializeDatabase(db *sql.DB) {
 		");")
 
 	if err != nil {
-		panic(err)
+		logger.Panic(err)
 	}
 
 	logger.Debug("Inserting data...")
@@ -53,15 +54,14 @@ func initializeDatabase(db *sql.DB) {
 		" VALUES ('Club Mate', 0.75);")
 
 	if err != nil {
-		panic(err)
+		logger.Panic(err)
 	}
 }
 
 func openDatabase() *sql.DB {
 	db, err := sql.Open("sqlite3", path)
 	if err != nil {
-		logger.Fatalf("Failed to open db: %s %v", path, err)
-		panic(err)
+		logger.Panic(err)
 	}
 	return db
 }

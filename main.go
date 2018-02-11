@@ -4,48 +4,60 @@ package main
 
 import (
 	_ "github.com/mattn/go-sqlite3"
-	"sync"
 	"github.com/omgwtflaserguns/matoledgr-server/db"
 	"github.com/op/go-logging"
 	"os"
+	"sync"
 )
 
 var wg sync.WaitGroup
 var logger = logging.MustGetLogger("log")
+var leveledBackend logging.LeveledBackend
+
+func main() {
+	createLogger()
+	readConfig()
+	configureLogger()
+
+	dbCon = db.Connect(config.database.file)
+	grpcServer := createGrpcServer()
+	wrapGrpcServer(grpcServer)
+
+	logger.Debug("startup complete, listening...")
+	wg.Wait()
+}
 
 func configureLogger() {
-	//TODO Set Loglevel as command line argument
+	var level logging.Level
+	switch config.log.level {
+	case "CRITICAL":
+		level = logging.CRITICAL
+	case "ERROR":
+		level = logging.ERROR
+	case "WARNING":
+		level = logging.WARNING
+	case "NOTICE":
+		level = logging.NOTICE
+	case "INFO":
+		level = logging.INFO
+	default:
+		level = logging.DEBUG
+	}
+	logger.Debugf("Loglevel will now be set to %s", level)
+	leveledBackend.SetLevel(logging.DEBUG, "")
+}
+
+
+func createLogger() {
+	//TODO Implement file logger
 	var format = logging.MustStringFormatter(
 		`%{color}%{time:15:04:05.000} %{shortfunc} ▶ %{level:.4s} %{id:03x}%{color:reset} %{message}`,
 	)
 
 	backend := logging.NewLogBackend(os.Stdout, "", 0)
-	formatter := logging.NewBackendFormatter(backend, format)
-	module := logging.AddModuleLevel(backend)
-	module.SetLevel(logging.DEBUG, "")
+	formatedBackend := logging.NewBackendFormatter(backend, format)
+	leveledBackend = logging.AddModuleLevel(formatedBackend)
+	leveledBackend.SetLevel(logging.DEBUG, "")
 
-	logging.SetBackend(formatter)
-}
-
-func main() {
-	configureLogger()
-	logger.Debug("server starting")
-
-	//TODO Read Database file as command line argument
-	dbCon = db.Connect("./matoledgr.db", )
-
-	logger.Debug("database connected")
-
-	grpcServer, listener := createGrpcServer()
-
-	wrapGrpcServer(grpcServer)
-
-	logger.Debug("grpc-web started")
-
-	wg.Add(1)
-	go runGrpcServer(grpcServer, listener)
-
-	logger.Debug("grpc started")
-	logger.Debug("listening...")
-	wg.Wait()
+	logging.SetBackend(leveledBackend)
 }

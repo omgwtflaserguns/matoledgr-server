@@ -1,17 +1,15 @@
 package main
 
 import (
-	"google.golang.org/grpc"
-	"net"
-	"log"
-	"google.golang.org/grpc/reflection"
-	pb "github.com/omgwtflaserguns/matoledgr-server/generated"
 	"context"
 	"database/sql"
+	pb "github.com/omgwtflaserguns/matoledgr-server/generated"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
+	"log"
+	"net"
 )
 
-//TODO Read Port from commandline
-const port = ":50015"
 var dbCon *sql.DB
 
 type grpcServer struct{}
@@ -24,7 +22,7 @@ func (s *grpcServer) ListProducts(ctx context.Context, in *pb.ProductRequest) (*
 	rows, err := dbCon.Query("SELECT id, name, price FROM PRODUCT")
 
 	if err != nil {
-		panic(err)
+		logger.Panic(err)
 	}
 
 	products := []*pb.Product{}
@@ -36,37 +34,36 @@ func (s *grpcServer) ListProducts(ctx context.Context, in *pb.ProductRequest) (*
 
 		err = rows.Scan(&id, &name, &price)
 		if err != nil {
-			logger.Errorf("Scan failed: %v", err)
-			ctx.Err()
+			logger.Panicf("Scan failed: %v", err)
 		}
 		products = append(products, &pb.Product{Id: id, Name: name, Price: price})
 	}
-
 	return &pb.ProductList{Products: products}, nil
 }
 
-func createGrpcServer() (*grpc.Server, net.Listener)  {
-	listener, err := net.Listen("tcp", port)
+func createGrpcServer() *grpc.Server {
+	listener, err := net.Listen("tcp", config.grpc.address)
 	if err != nil {
-		logger.Panicf("failed to listen on tcp port %s: %v", port, err)
+		logger.Panicf("failed to listen on tcp, address: %s %v", config.grpc.address, err)
 	}
-	logger.Debug("tcp listener started")
 
 	server := grpc.NewServer()
 	pb.RegisterGreeterServer(server, &grpcServer{})
 	pb.RegisterProductsServer(server, &grpcServer{})
 
-	// Register reflection service on gRPC server.
 	reflection.Register(server)
 
-	return server, listener
+	wg.Add(1)
+	go runGrpcServer(server, listener)
+
+	logger.Debugf("gRPC server started at %s", config.grpc.address)
+	return server
 }
 
 func runGrpcServer(grpcServer *grpc.Server, listener net.Listener) {
 	defer wg.Done()
 
 	err := grpcServer.Serve(listener)
-
 	if err != nil {
 		log.Panicf("failed to serve: %v", err)
 	}

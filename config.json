@@ -1,0 +1,17 @@
+{
+  "log": {
+    "level" : "DEBUG",
+    "writeFile": true,
+    "file": "./log.txt"
+  },
+  "grpc": {
+    "address": ":50015"
+  },
+  "grpcWeb": {
+    "address": ":8080"
+  },
+  "database": {
+    "file": "./matoledgr.db"
+  },
+  "debugCors": false
+}
