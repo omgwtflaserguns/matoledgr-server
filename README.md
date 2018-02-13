@@ -1,5 +1,5 @@
 
-# Matoledgr-server
+# Matomat-server
 
 go grpc und grpc-web server
 
