@@ -3,11 +3,12 @@ package main
 import (
 	"context"
 	"database/sql"
-	pb "github.com/omgwtflaserguns/matoledgr-server/generated"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/reflection"
 	"log"
 	"net"
+
+	pb "github.com/omgwtflaserguns/matomat-server/generated"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 )
 
 var dbCon *sql.DB

@@ -1,13 +1,14 @@
-//go:generate protoc -I ./contracts --go_out=plugins=grpc:./generated ./contracts/matoledgr.proto
+//go:generate protoc -I ./contracts --go_out=plugins=grpc:./generated ./contracts/matomat.proto
 
 package main
 
 import (
-	_ "github.com/mattn/go-sqlite3"
-	"github.com/omgwtflaserguns/matoledgr-server/db"
-	"github.com/op/go-logging"
 	"os"
 	"sync"
+
+	_ "github.com/mattn/go-sqlite3"
+	"github.com/omgwtflaserguns/matomat-server/db"
+	"github.com/op/go-logging"
 )
 
 var wg sync.WaitGroup
@@ -46,7 +47,6 @@ func configureLogger() {
 	logger.Debugf("Loglevel will now be set to %s", level)
 	leveledBackend.SetLevel(logging.DEBUG, "")
 }
-
 
 func createLogger() {
 	//TODO Implement file logger

@@ -61,6 +61,15 @@
   revision = "a4e142e9c047c904fa2f1e144d9a84e6133024bc"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/omgwtflaserguns/matomat-server"
+  packages = [
+    "db",
+    "generated"
+  ]
+  revision = "92cdecc65fcc66c63c2fe8faada7e9879d85626b"
+
+[[projects]]
   name = "github.com/op/go-logging"
   packages = ["."]
   revision = "b2cb9fa56473e98db8caba80237377e83fe44db5"
@@ -198,6 +207,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "b9a7e6a39d347a02f4ecad39603139059c5ca0af48b12a6c0847a6ef0b09ae47"
+  inputs-digest = "c823a25d68902c0aa7de7668439c6198e9df5b1b2138795be602a861104a6702"
   solver-name = "gps-cdcl"
   solver-version = 1

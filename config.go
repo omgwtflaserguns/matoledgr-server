@@ -35,7 +35,7 @@ type Config struct {
 func readConfig() {
 	//TODO use config watch function and update values. See viper docs
 	viper.SetConfigName("config")
-	viper.AddConfigPath("$HOME/.matoledgr")
+	viper.AddConfigPath("$HOME/.matomat")
 	viper.AddConfigPath(".")
 
 	err := viper.ReadInConfig()
