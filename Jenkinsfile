@@ -1,58 +1,62 @@
 node {
     try{
-        ws("${JENKINS_HOME}/jobs/${JOB_NAME}/builds/${BUILD_ID}/") {
-            withEnv(["GOPATH=${JENKINS_HOME}/jobs/${JOB_NAME}/builds/${BUILD_ID}"]) {
-                env.PATH="${GOPATH}/bin:$PATH"
+        ws("${JENKINS_HOME}/jobs/${JOB_NAME}/builds/${BUILD_ID}/gopath/src/github.com/omgwtflaserguns/matomat-server") {
+            
+            // Install the desired Go version
+            def root = tool name: 'go 1.9.4', type: 'go'
+
+            // Export environment variables pointing to the directory where Go was installed
+            withEnv(["GOROOT=${root}", "PATH+GO=${root}/bin", "GOPATH=${JENKINS_HOME}/jobs/${JOB_NAME}/builds/${BUILD_ID}/gopath"]) {
 
                 stage('Checkout'){
                     echo 'Checking out SCM'
                     checkout scm
                 }
 
-                stage('Pre Test'){
-                    echo 'Pulling Dependencies'
+                stage('Get Dependencies'){
+                    echo 'Getting dependencies'
 
-                    sh 'go version'
-                    sh 'go get -u github.com/golang/dep/cmd/dep'
-                    sh 'go get -u github.com/golang/lint/golint'
+                    echo "GOROOT: $GOROOT"
+                    echo "GOPATH: $GOPATH"
+                    echo "PATH: $PATH"
 
-                    //or -update
-                    sh 'cd ${GOPATH}/src/cmd/project/ && dep ensure'
-                }
+                    sh 'go version'                       
+                    sh 'go get -u github.com/golang/dep/...'
 
-                stage('Test'){
-
-                    //List all our project files with 'go list ./... | grep -v /vendor/ | grep -v github.com | grep -v golang.org'
-                    //Push our project files relative to ./src
-                    sh 'cd $GOPATH && go list ./... | grep -v /vendor/ | grep -v github.com | grep -v golang.org > projectPaths'
-
-                    //Print them with 'awk '$0="./src/"$0' projectPaths' in order to get full relative path to $GOPATH
-                    def paths = sh returnStdout: true, script: """awk '\$0="./src/"\$0' projectPaths"""
-
-                    echo 'Vetting'
-
-                    sh """cd $GOPATH && go tool vet ${paths}"""
-
-                    echo 'Linting'
-                    sh """cd $GOPATH && golint ${paths}"""
-
-                    echo 'Testing'
-                    sh """cd $GOPATH && go test -race -cover ${paths}"""
+                    sh "$GOPATH/bin/dep ensure"
                 }
 
                 stage('Build'){
                     echo 'Building Executable'
-
-                    //Produced binary is $GOPATH/src/cmd/project/project
-                    sh """cd $GOPATH/src/cmd/project/ && go build -ldflags '-s'"""
+                    sh 'go build'
                 }
             }
         }
     }catch (e) {
-        // If there was an exception thrown, the build failed
         currentBuild.result = "FAILED"
     } finally {
-        // Success or failure, always send notifications
         notifyBuild(currentBuild.result)
     }
+}
+
+
+def notifyBuild(String buildStatus = 'STARTED') {
+  // build status of null means successful
+  buildStatus =  buildStatus ?: 'SUCCESSFUL'
+
+  // Default values
+  def colorCode = '#FF0000'
+  def subject = "${buildStatus}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'"
+  def summary = "${subject} <${env.BUILD_URL}|Job URL> - <${env.BUILD_URL}/console|Console Output>"
+
+  if (buildStatus == 'STARTED') {
+    colorCode = '#FFFF00'
+  } else if (buildStatus == 'SUCCESSFUL') {
+    colorCode = '#00FF00'
+  } else {
+    colorCode = '#FF0000'
+  }
+
+  // Send notifications
+  slackSend (color: colorCode, message: summary)
 }
