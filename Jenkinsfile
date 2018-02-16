@@ -24,6 +24,8 @@ node {
                     sh 'go get -u github.com/golang/dep/...'
 
                     sh "$GOPATH/bin/dep ensure"
+
+                    sh 'go vet'
                 }
 
                 stage('Build'){

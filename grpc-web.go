@@ -54,6 +54,6 @@ func runHttpServer(httpServer *http.Server) {
 	err := httpServer.ListenAndServe()
 
 	if err != nil {
-		logger.Panicf("ListenAndServe failed: ", err)
+		logger.Panicf("ListenAndServe failed: %s", err)
 	}
 }
