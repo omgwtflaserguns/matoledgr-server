@@ -38,7 +38,7 @@ node {
                     if (env.BRANCH_NAME == 'master') {
                         echo 'on master branch, deploy into test...'
                         sh 'cp ./matomat-server /var/lib/jenkins/userContent/matomat-server'
-                        sh '/bin/sh /var/lib/jenkins/deployTest.sh'
+                        sh 'sudo /bin/sh /var/lib/jenkins/deployTest.sh'
                     }
                     else if (env.BRANCH_NAME == 'release') {
                         echo 'on release branch, deploy into production...'
