@@ -36,11 +36,11 @@ node {
                 stage('Deploy'){
                     if (env.BRANCH_NAME == 'master') {
                         echo 'on master branch, deploy into test...'
-                        sh 'sudo ./deployTest.sh'
+                        sh '/bin/sh /var/lib/jenkins/deployTest.sh'
                     }
                     else if (env.BRANCH_NAME == 'release') {
                         echo 'on release branch, deploy into production...'
-                        sh 'sudo /var/lib/jenkins/deployProd.sh'
+                        sh 'sudo /bin/sh /var/lib/jenkins/deployProd.sh'
                     }
                     else {
                         echo 'not on master or release, no deployment for you!'
