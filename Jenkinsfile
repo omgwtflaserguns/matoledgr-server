@@ -40,7 +40,7 @@ node {
                     }
                     else if (env.BRANCH_NAME == 'release') {
                         echo 'on release branch, deploy into production...'
-                        sudo 'var/lib/jenkins/deployProd.sh'
+                        sh 'sudo /var/lib/jenkins/deployProd.sh'
                     }
                     else {
                         echo 'not on master or release, no deployment for you!'
