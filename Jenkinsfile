@@ -1,7 +1,7 @@
 node {
     try{
         ws("${JENKINS_HOME}/jobs/${JOB_NAME}/builds/${BUILD_ID}/gopath/src/github.com/omgwtflaserguns/matomat-server") {
-            
+
             // Install the desired Go version
             def root = tool name: 'go 1.9.4', type: 'go'
 
@@ -9,7 +9,7 @@ node {
             withEnv(["GOROOT=${root}", "PATH+GO=${root}/bin", "GOPATH=${JENKINS_HOME}/jobs/${JOB_NAME}/builds/${BUILD_ID}/gopath"]) {
 
                 stage('Checkout'){
-                    echo 'Checking from ' + env.BRANCH_NAME
+                    echo 'Checking out from ' + env.BRANCH_NAME
                     checkout scm
                 }
 
@@ -20,7 +20,7 @@ node {
                     echo "GOPATH: $GOPATH"
                     echo "PATH: $PATH"
 
-                    sh 'go version'                       
+                    sh 'go version'
                     sh 'go get -u github.com/golang/dep/...'
 
                     sh "$GOPATH/bin/dep ensure"
@@ -33,8 +33,18 @@ node {
                     sh 'go build'
                 }
 
-                stage('Deploy Test'){
-
+                stage('Deploy'){
+                    if (env.BRANCH_NAME == 'master') {
+                        echo 'on master branch, deploy into test...'
+                        sh 'sudo ./deployTest.sh'
+                    }
+                    else if (env.BRANCH_NAME == 'release') {
+                        echo 'on release branch, deploy into production...'
+                        sh 'sudo ./deployProd.sh'
+                    }
+                    else {
+                        echo 'not on master or release, no deployment for you!'
+                    }
                 }
             }
         }
@@ -44,7 +54,6 @@ node {
         notifyBuild(currentBuild.result)
     }
 }
-
 
 def notifyBuild(String buildStatus = 'STARTED') {
   // build status of null means successful
