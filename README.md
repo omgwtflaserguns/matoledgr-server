@@ -1,5 +1,3 @@
-[![Build Status](https://jenkins.matomat.de/buildStatus/icon?job=omgwtflaserguns/matomat-server/master)](https://jenkins.matomat.de/job/omgwtflaserguns/matomat-server/master)
-
 # Matomat-server
 
 go grpc und grpc-web server
