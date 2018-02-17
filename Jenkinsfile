@@ -9,7 +9,7 @@ node {
             withEnv(["GOROOT=${root}", "PATH+GO=${root}/bin", "GOPATH=${JENKINS_HOME}/jobs/${JOB_NAME}/builds/${BUILD_ID}/gopath"]) {
 
                 stage('Checkout'){
-                    echo 'Checking out SCM'
+                    echo 'Checking from ' + env.BRANCH_NAME
                     checkout scm
                 }
 
@@ -31,6 +31,10 @@ node {
                 stage('Build'){
                     echo 'Building Executable'
                     sh 'go build'
+                }
+
+                stage('Deploy Test'){
+
                 }
             }
         }
