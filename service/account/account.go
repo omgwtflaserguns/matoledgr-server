@@ -3,6 +3,7 @@ package account
 import (
 	"context"
 	"errors"
+	"github.com/omgwtflaserguns/matomat-server/config"
 	"github.com/omgwtflaserguns/matomat-server/db"
 	pb "github.com/omgwtflaserguns/matomat-server/generated"
 	"github.com/op/go-logging"
@@ -10,6 +11,7 @@ import (
 )
 
 var logger = logging.MustGetLogger("log")
+var conf = config.GetConfig()
 
 var (
 	ErrUserNotFound = errors.New("account: User not found")
@@ -19,38 +21,41 @@ var (
 type Service struct{}
 
 func (s *Service) Register(ctx context.Context, in *pb.AccountRequest) (*pb.RegisterResponse, error) {
-	logger.Debugf("Got register for %s", in.Username)
 
-	if len(in.Password) < 8 {
+	if len(in.Password) < conf.Security.MinimalPasswordLength {
+		logger.Debugf("Account: Register for user %s failed, password too short", in.Username)
 		return &pb.RegisterResponse{Status: pb.RegisterStatus_REGISTER_PASSWORD_INVALID}, nil
 	}
 
 	userExists, err := doesUserExist(in.Username)
 
 	if err != nil {
+		logger.Fatalf("Account: Register for user %s failed with error: %v", in.Username, err)
 		return nil, err
 	}
 
 	if userExists {
+		logger.Debugf("Account: Register for user %s failed, user exists", in.Username)
 		return &pb.RegisterResponse{Status: pb.RegisterStatus_REGISTER_NAME_ALREADY_IN_USE}, nil
 	}
 
 	err = createUser(in.Username, in.Password)
 
 	if err != nil {
+		logger.Fatalf("Account: Register for user %s failed with error: %v", in.Username, err)
 		return nil, err
 	}
 
+	logger.Debugf("Account: Register for user %s successful", in.Username)
 	return &pb.RegisterResponse{Status: pb.RegisterStatus_REGISTER_OK}, nil
 }
 
 func (s *Service) Login(ctx context.Context, in *pb.AccountRequest) (*pb.LoginResponse, error) {
-	logger.Debugf("Got login for %s", in.Username)
 	return nil, nil
 }
 
 func createUser(username string, password string) error {
-	hash, err := bcrypt.GenerateFromPassword([]byte(password), 15)
+	hash, err := bcrypt.GenerateFromPassword([]byte(password), conf.Security.BcryptCost)
 
 	if err != nil {
 		return err

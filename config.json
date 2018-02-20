@@ -11,5 +11,9 @@
   "database": {
     "file": "./matomat.db"
   },
+  "security": {
+    "minimalPasswordLength": 8,
+    "bcryptCost": 15
+  },
   "debugCors": false
 }

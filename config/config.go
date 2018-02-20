@@ -23,11 +23,17 @@ type ConfigDatabase struct {
 	File string
 }
 
+type ConfigSecurity struct {
+	MinimalPasswordLength int
+	BcryptCost            int
+}
+
 type Configuration struct {
 	Log       ConfigLog
 	Grpc      ConfigGrpc
 	GrpcWeb   ConfigGrpcWeb
 	Database  ConfigDatabase
+	Security  ConfigSecurity
 	DebugCors bool
 }
 
@@ -63,6 +69,10 @@ func readConfig() *Configuration {
 		},
 		Database: ConfigDatabase{
 			File: viper.GetString("database.file"),
+		},
+		Security: ConfigSecurity{
+			MinimalPasswordLength: viper.GetInt("security.minimalPasswordLength"),
+			BcryptCost:            viper.GetInt("security.bcryptCost"),
 		},
 		DebugCors: viper.GetBool("debugCors"),
 	}
