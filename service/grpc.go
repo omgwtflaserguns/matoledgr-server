@@ -25,6 +25,7 @@ func CreateGrpcServer(wg *sync.WaitGroup) *grpc.Server {
 	}
 
 	server := grpc.NewServer()
+
 	pb.RegisterProductsServer(server, &product.Service{})
 	pb.RegisterAccountServer(server, &account.Service{})
 

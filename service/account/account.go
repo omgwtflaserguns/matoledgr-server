@@ -2,10 +2,12 @@ package account
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 	"github.com/omgwtflaserguns/matomat-server/config"
 	"github.com/omgwtflaserguns/matomat-server/db"
 	pb "github.com/omgwtflaserguns/matomat-server/generated"
+	"github.com/omgwtflaserguns/matomat-server/model"
 	"github.com/op/go-logging"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -30,7 +32,7 @@ func (s *Service) Register(ctx context.Context, in *pb.AccountRequest) (*pb.Regi
 	userExists, err := doesUserExist(in.Username)
 
 	if err != nil {
-		logger.Fatalf("Account: Register for user %s failed with error: %v", in.Username, err)
+		logger.Fatalf("Account: Register for user %s failed, doesUserExist returned error: %v", in.Username, err)
 		return nil, err
 	}
 
@@ -42,7 +44,7 @@ func (s *Service) Register(ctx context.Context, in *pb.AccountRequest) (*pb.Regi
 	err = createUser(in.Username, in.Password)
 
 	if err != nil {
-		logger.Fatalf("Account: Register for user %s failed with error: %v", in.Username, err)
+		logger.Fatalf("Account: Register for user %s failed, create User returned error: %v", in.Username, err)
 		return nil, err
 	}
 
@@ -51,7 +53,30 @@ func (s *Service) Register(ctx context.Context, in *pb.AccountRequest) (*pb.Regi
 }
 
 func (s *Service) Login(ctx context.Context, in *pb.AccountRequest) (*pb.LoginResponse, error) {
-	return nil, nil
+
+	usr, err := getUserByUsername(in.Username)
+
+	if err != nil {
+		if err == ErrUserNotFound {
+			logger.Debugf("Account: Login for user %s failed, no user found", in.Username)
+		} else {
+			logger.Fatalf("Account: Login for user %s failed, get User returned error: %v", in.Username, err)
+		}
+		return &pb.LoginResponse{Status: pb.LoginStatus_LOGIN_FAILED}, nil
+	}
+
+	err = bcrypt.CompareHashAndPassword(usr.Hash, []byte(in.Password))
+
+	if err != nil {
+		logger.Debugf("Account: Login for user %s failed, bcrypt returned error: %v", in.Username, err)
+		return &pb.LoginResponse{Status: pb.LoginStatus_LOGIN_FAILED}, nil
+	}
+
+	logger.Debugf("Account: Login for user %s successful", in.Username)
+	return &pb.LoginResponse{
+		Status: pb.LoginStatus_LOGIN_OK,
+		User:   &pb.User{Username: usr.Username},
+	}, nil
 }
 
 func createUser(username string, password string) error {
@@ -79,11 +104,10 @@ func doesUserExist(username string) (bool, error) {
 	return rows.Next(), nil
 }
 
-/*
 func getUserByUsername(username string) (model.User, error) {
 	user := model.User{}
-	rows, err := db.DbCon.Query("SELECT id, username, hash " +
-		"FROM Account " +
+	rows, err := db.DbCon.Query("SELECT id, username, hash "+
+		"FROM Account "+
 		"WHERE username = $1", username)
 
 	if err != nil {
@@ -98,24 +122,17 @@ func getUserByUsername(username string) (model.User, error) {
 		}
 		return user, err
 	}
-
 	return user, nil
 }
 
-func getUserFromRows(rows *sql.Rows) (model.User, error){
+func getUserFromRows(rows *sql.Rows) (model.User, error) {
 	if rows.Next() {
-
-		var id int32
-		var username string
-		var hash string
-
-		err := rows.Scan(&id, &username, &hash)
+		usr := model.User{}
+		err := rows.Scan(&usr.Id, &usr.Username, &usr.Hash)
 		if err != nil {
 			return model.User{}, err
 		}
-
-		return model.User{Id: id, Username: username, Hash: hash}, nil
+		return usr, nil
 	}
 	return model.User{}, ErrNoRows
 }
-*/
