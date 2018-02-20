@@ -8,17 +8,13 @@ It is generated from these files:
 	matomat.proto
 
 It has these top-level messages:
-	HelloRequest
-	HelloReply
 	ProductRequest
 	ProductList
 	Product
-	BuyRequest
-	BuyResponse
-	RegisterRequest
+	AccountRequest
 	RegisterResponse
-	LoginRequest
 	LoginResponse
+	User
 */
 package matomat
 
@@ -87,45 +83,13 @@ func (x LoginStatus) String() string {
 }
 func (LoginStatus) EnumDescriptor() ([]byte, []int) { return fileDescriptor0, []int{1} }
 
-type HelloRequest struct {
-	Name string `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
-}
-
-func (m *HelloRequest) Reset()                    { *m = HelloRequest{} }
-func (m *HelloRequest) String() string            { return proto.CompactTextString(m) }
-func (*HelloRequest) ProtoMessage()               {}
-func (*HelloRequest) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{0} }
-
-func (m *HelloRequest) GetName() string {
-	if m != nil {
-		return m.Name
-	}
-	return ""
-}
-
-type HelloReply struct {
-	Message string `protobuf:"bytes,1,opt,name=message" json:"message,omitempty"`
-}
-
-func (m *HelloReply) Reset()                    { *m = HelloReply{} }
-func (m *HelloReply) String() string            { return proto.CompactTextString(m) }
-func (*HelloReply) ProtoMessage()               {}
-func (*HelloReply) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{1} }
-
-func (m *HelloReply) GetMessage() string {
-	if m != nil {
-		return m.Message
-	}
-	return ""
-}
-
 type ProductRequest struct {
 }
 
 func (m *ProductRequest) Reset()                    { *m = ProductRequest{} }
 func (m *ProductRequest) String() string            { return proto.CompactTextString(m) }
 func (*ProductRequest) ProtoMessage()               {}
-func (*ProductRequest) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{2} }
+func (*ProductRequest) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{0} }
 
 type ProductList struct {
 	Products []*Product `protobuf:"bytes,1,rep,name=products" json:"products,omitempty"`
@@ -134,7 +98,7 @@ type ProductList struct {
 func (m *ProductList) Reset()                    { *m = ProductList{} }
 func (m *ProductList) String() string            { return proto.CompactTextString(m) }
 func (*ProductList) ProtoMessage()               {}
-func (*ProductList) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{3} }
+func (*ProductList) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{1} }
 
 func (m *ProductList) GetProducts() []*Product {
 	if m != nil {
@@ -152,7 +116,7 @@ type Product struct {
 func (m *Product) Reset()                    { *m = Product{} }
 func (m *Product) String() string            { return proto.CompactTextString(m) }
 func (*Product) ProtoMessage()               {}
-func (*Product) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{4} }
+func (*Product) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{2} }
 
 func (m *Product) GetId() int32 {
 	if m != nil {
@@ -175,66 +139,26 @@ func (m *Product) GetPrice() float32 {
 	return 0
 }
 
-type BuyRequest struct {
-	ProductId int32 `protobuf:"varint,1,opt,name=productId" json:"productId,omitempty"`
-	Count     int32 `protobuf:"varint,2,opt,name=count" json:"count,omitempty"`
-}
-
-func (m *BuyRequest) Reset()                    { *m = BuyRequest{} }
-func (m *BuyRequest) String() string            { return proto.CompactTextString(m) }
-func (*BuyRequest) ProtoMessage()               {}
-func (*BuyRequest) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{5} }
-
-func (m *BuyRequest) GetProductId() int32 {
-	if m != nil {
-		return m.ProductId
-	}
-	return 0
-}
-
-func (m *BuyRequest) GetCount() int32 {
-	if m != nil {
-		return m.Count
-	}
-	return 0
-}
-
-type BuyResponse struct {
-}
-
-func (m *BuyResponse) Reset()                    { *m = BuyResponse{} }
-func (m *BuyResponse) String() string            { return proto.CompactTextString(m) }
-func (*BuyResponse) ProtoMessage()               {}
-func (*BuyResponse) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{6} }
-
-type RegisterRequest struct {
+type AccountRequest struct {
 	Username string `protobuf:"bytes,1,opt,name=username" json:"username,omitempty"`
 	Password string `protobuf:"bytes,2,opt,name=password" json:"password,omitempty"`
-	Email    string `protobuf:"bytes,3,opt,name=email" json:"email,omitempty"`
 }
 
-func (m *RegisterRequest) Reset()                    { *m = RegisterRequest{} }
-func (m *RegisterRequest) String() string            { return proto.CompactTextString(m) }
-func (*RegisterRequest) ProtoMessage()               {}
-func (*RegisterRequest) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{7} }
+func (m *AccountRequest) Reset()                    { *m = AccountRequest{} }
+func (m *AccountRequest) String() string            { return proto.CompactTextString(m) }
+func (*AccountRequest) ProtoMessage()               {}
+func (*AccountRequest) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{3} }
 
-func (m *RegisterRequest) GetUsername() string {
+func (m *AccountRequest) GetUsername() string {
 	if m != nil {
 		return m.Username
 	}
 	return ""
 }
 
-func (m *RegisterRequest) GetPassword() string {
+func (m *AccountRequest) GetPassword() string {
 	if m != nil {
 		return m.Password
-	}
-	return ""
-}
-
-func (m *RegisterRequest) GetEmail() string {
-	if m != nil {
-		return m.Email
 	}
 	return ""
 }
@@ -246,7 +170,7 @@ type RegisterResponse struct {
 func (m *RegisterResponse) Reset()                    { *m = RegisterResponse{} }
 func (m *RegisterResponse) String() string            { return proto.CompactTextString(m) }
 func (*RegisterResponse) ProtoMessage()               {}
-func (*RegisterResponse) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{8} }
+func (*RegisterResponse) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{4} }
 
 func (m *RegisterResponse) GetStatus() RegisterStatus {
 	if m != nil {
@@ -255,38 +179,15 @@ func (m *RegisterResponse) GetStatus() RegisterStatus {
 	return RegisterStatus_REGISTER_OK
 }
 
-type LoginRequest struct {
-	Username string `protobuf:"bytes,1,opt,name=username" json:"username,omitempty"`
-	Password string `protobuf:"bytes,2,opt,name=password" json:"password,omitempty"`
-}
-
-func (m *LoginRequest) Reset()                    { *m = LoginRequest{} }
-func (m *LoginRequest) String() string            { return proto.CompactTextString(m) }
-func (*LoginRequest) ProtoMessage()               {}
-func (*LoginRequest) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{9} }
-
-func (m *LoginRequest) GetUsername() string {
-	if m != nil {
-		return m.Username
-	}
-	return ""
-}
-
-func (m *LoginRequest) GetPassword() string {
-	if m != nil {
-		return m.Password
-	}
-	return ""
-}
-
 type LoginResponse struct {
 	Status LoginStatus `protobuf:"varint,1,opt,name=status,enum=matomat.LoginStatus" json:"status,omitempty"`
+	User   *User       `protobuf:"bytes,2,opt,name=user" json:"user,omitempty"`
 }
 
 func (m *LoginResponse) Reset()                    { *m = LoginResponse{} }
 func (m *LoginResponse) String() string            { return proto.CompactTextString(m) }
 func (*LoginResponse) ProtoMessage()               {}
-func (*LoginResponse) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{10} }
+func (*LoginResponse) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{5} }
 
 func (m *LoginResponse) GetStatus() LoginStatus {
 	if m != nil {
@@ -295,18 +196,37 @@ func (m *LoginResponse) GetStatus() LoginStatus {
 	return LoginStatus_LOGIN_OK
 }
 
+func (m *LoginResponse) GetUser() *User {
+	if m != nil {
+		return m.User
+	}
+	return nil
+}
+
+type User struct {
+	Username string `protobuf:"bytes,1,opt,name=username" json:"username,omitempty"`
+}
+
+func (m *User) Reset()                    { *m = User{} }
+func (m *User) String() string            { return proto.CompactTextString(m) }
+func (*User) ProtoMessage()               {}
+func (*User) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{6} }
+
+func (m *User) GetUsername() string {
+	if m != nil {
+		return m.Username
+	}
+	return ""
+}
+
 func init() {
-	proto.RegisterType((*HelloRequest)(nil), "matomat.HelloRequest")
-	proto.RegisterType((*HelloReply)(nil), "matomat.HelloReply")
 	proto.RegisterType((*ProductRequest)(nil), "matomat.ProductRequest")
 	proto.RegisterType((*ProductList)(nil), "matomat.ProductList")
 	proto.RegisterType((*Product)(nil), "matomat.Product")
-	proto.RegisterType((*BuyRequest)(nil), "matomat.BuyRequest")
-	proto.RegisterType((*BuyResponse)(nil), "matomat.BuyResponse")
-	proto.RegisterType((*RegisterRequest)(nil), "matomat.RegisterRequest")
+	proto.RegisterType((*AccountRequest)(nil), "matomat.AccountRequest")
 	proto.RegisterType((*RegisterResponse)(nil), "matomat.RegisterResponse")
-	proto.RegisterType((*LoginRequest)(nil), "matomat.LoginRequest")
 	proto.RegisterType((*LoginResponse)(nil), "matomat.LoginResponse")
+	proto.RegisterType((*User)(nil), "matomat.User")
 	proto.RegisterEnum("matomat.RegisterStatus", RegisterStatus_name, RegisterStatus_value)
 	proto.RegisterEnum("matomat.LoginStatus", LoginStatus_name, LoginStatus_value)
 }
@@ -318,70 +238,6 @@ var _ grpc.ClientConn
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
 const _ = grpc.SupportPackageIsVersion4
-
-// Client API for Greeter service
-
-type GreeterClient interface {
-	SayHello(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloReply, error)
-}
-
-type greeterClient struct {
-	cc *grpc.ClientConn
-}
-
-func NewGreeterClient(cc *grpc.ClientConn) GreeterClient {
-	return &greeterClient{cc}
-}
-
-func (c *greeterClient) SayHello(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloReply, error) {
-	out := new(HelloReply)
-	err := grpc.Invoke(ctx, "/matomat.Greeter/SayHello", in, out, c.cc, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-// Server API for Greeter service
-
-type GreeterServer interface {
-	SayHello(context.Context, *HelloRequest) (*HelloReply, error)
-}
-
-func RegisterGreeterServer(s *grpc.Server, srv GreeterServer) {
-	s.RegisterService(&_Greeter_serviceDesc, srv)
-}
-
-func _Greeter_SayHello_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(HelloRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(GreeterServer).SayHello(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/matomat.Greeter/SayHello",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(GreeterServer).SayHello(ctx, req.(*HelloRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-var _Greeter_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "matomat.Greeter",
-	HandlerType: (*GreeterServer)(nil),
-	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "SayHello",
-			Handler:    _Greeter_SayHello_Handler,
-		},
-	},
-	Streams:  []grpc.StreamDesc{},
-	Metadata: "matomat.proto",
-}
 
 // Client API for Products service
 
@@ -447,75 +303,11 @@ var _Products_serviceDesc = grpc.ServiceDesc{
 	Metadata: "matomat.proto",
 }
 
-// Client API for Transaction service
-
-type TransactionClient interface {
-	Buy(ctx context.Context, in *BuyRequest, opts ...grpc.CallOption) (*BuyResponse, error)
-}
-
-type transactionClient struct {
-	cc *grpc.ClientConn
-}
-
-func NewTransactionClient(cc *grpc.ClientConn) TransactionClient {
-	return &transactionClient{cc}
-}
-
-func (c *transactionClient) Buy(ctx context.Context, in *BuyRequest, opts ...grpc.CallOption) (*BuyResponse, error) {
-	out := new(BuyResponse)
-	err := grpc.Invoke(ctx, "/matomat.Transaction/Buy", in, out, c.cc, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-// Server API for Transaction service
-
-type TransactionServer interface {
-	Buy(context.Context, *BuyRequest) (*BuyResponse, error)
-}
-
-func RegisterTransactionServer(s *grpc.Server, srv TransactionServer) {
-	s.RegisterService(&_Transaction_serviceDesc, srv)
-}
-
-func _Transaction_Buy_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(BuyRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(TransactionServer).Buy(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/matomat.Transaction/Buy",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TransactionServer).Buy(ctx, req.(*BuyRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-var _Transaction_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "matomat.Transaction",
-	HandlerType: (*TransactionServer)(nil),
-	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "Buy",
-			Handler:    _Transaction_Buy_Handler,
-		},
-	},
-	Streams:  []grpc.StreamDesc{},
-	Metadata: "matomat.proto",
-}
-
 // Client API for Account service
 
 type AccountClient interface {
-	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
-	Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponse, error)
+	Login(ctx context.Context, in *AccountRequest, opts ...grpc.CallOption) (*LoginResponse, error)
+	Register(ctx context.Context, in *AccountRequest, opts ...grpc.CallOption) (*RegisterResponse, error)
 }
 
 type accountClient struct {
@@ -526,7 +318,7 @@ func NewAccountClient(cc *grpc.ClientConn) AccountClient {
 	return &accountClient{cc}
 }
 
-func (c *accountClient) Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error) {
+func (c *accountClient) Login(ctx context.Context, in *AccountRequest, opts ...grpc.CallOption) (*LoginResponse, error) {
 	out := new(LoginResponse)
 	err := grpc.Invoke(ctx, "/matomat.Account/Login", in, out, c.cc, opts...)
 	if err != nil {
@@ -535,7 +327,7 @@ func (c *accountClient) Login(ctx context.Context, in *LoginRequest, opts ...grp
 	return out, nil
 }
 
-func (c *accountClient) Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponse, error) {
+func (c *accountClient) Register(ctx context.Context, in *AccountRequest, opts ...grpc.CallOption) (*RegisterResponse, error) {
 	out := new(RegisterResponse)
 	err := grpc.Invoke(ctx, "/matomat.Account/Register", in, out, c.cc, opts...)
 	if err != nil {
@@ -547,8 +339,8 @@ func (c *accountClient) Register(ctx context.Context, in *RegisterRequest, opts 
 // Server API for Account service
 
 type AccountServer interface {
-	Login(context.Context, *LoginRequest) (*LoginResponse, error)
-	Register(context.Context, *RegisterRequest) (*RegisterResponse, error)
+	Login(context.Context, *AccountRequest) (*LoginResponse, error)
+	Register(context.Context, *AccountRequest) (*RegisterResponse, error)
 }
 
 func RegisterAccountServer(s *grpc.Server, srv AccountServer) {
@@ -556,7 +348,7 @@ func RegisterAccountServer(s *grpc.Server, srv AccountServer) {
 }
 
 func _Account_Login_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(LoginRequest)
+	in := new(AccountRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -568,13 +360,13 @@ func _Account_Login_Handler(srv interface{}, ctx context.Context, dec func(inter
 		FullMethod: "/matomat.Account/Login",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AccountServer).Login(ctx, req.(*LoginRequest))
+		return srv.(AccountServer).Login(ctx, req.(*AccountRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _Account_Register_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RegisterRequest)
+	in := new(AccountRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -586,7 +378,7 @@ func _Account_Register_Handler(srv interface{}, ctx context.Context, dec func(in
 		FullMethod: "/matomat.Account/Register",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AccountServer).Register(ctx, req.(*RegisterRequest))
+		return srv.(AccountServer).Register(ctx, req.(*AccountRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -611,40 +403,33 @@ var _Account_serviceDesc = grpc.ServiceDesc{
 func init() { proto.RegisterFile("matomat.proto", fileDescriptor0) }
 
 var fileDescriptor0 = []byte{
-	// 552 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xa4, 0x94, 0x51, 0x6f, 0xda, 0x3e,
-	0x14, 0xc5, 0x09, 0xfd, 0x53, 0xc2, 0x0d, 0xd0, 0xc8, 0x7f, 0xb6, 0x52, 0xd4, 0x49, 0xc8, 0x0f,
-	0x13, 0xaa, 0xba, 0x4e, 0xca, 0x5e, 0x2a, 0x4d, 0xd3, 0x96, 0x42, 0xca, 0xa2, 0x66, 0x50, 0x39,
-	0xdd, 0xa6, 0x3d, 0x45, 0x29, 0x58, 0x28, 0x12, 0x24, 0x59, 0xec, 0x68, 0xe2, 0x0b, 0xec, 0x73,
-	0x4f, 0x38, 0x76, 0x48, 0xe9, 0xde, 0xf6, 0xc6, 0xb9, 0xf7, 0xfa, 0x77, 0x8f, 0xcd, 0x01, 0xe8,
-	0x6c, 0x42, 0x9e, 0x6c, 0x42, 0x7e, 0x95, 0x66, 0x09, 0x4f, 0x50, 0x53, 0x4a, 0x8c, 0xa1, 0xfd,
-	0x99, 0xae, 0xd7, 0x09, 0xa1, 0x3f, 0x73, 0xca, 0x38, 0x42, 0xf0, 0x5f, 0x1c, 0x6e, 0x68, 0x5f,
-	0x1b, 0x6a, 0xa3, 0x16, 0x11, 0x9f, 0xf1, 0x6b, 0x00, 0x39, 0x93, 0xae, 0xb7, 0xa8, 0x0f, 0xcd,
-	0x0d, 0x65, 0x2c, 0x5c, 0xa9, 0x21, 0x25, 0xb1, 0x09, 0xdd, 0xfb, 0x2c, 0x59, 0xe6, 0x0b, 0x2e,
-	0x69, 0xf8, 0x3d, 0x18, 0xb2, 0xe2, 0x45, 0x8c, 0xa3, 0x4b, 0xd0, 0xd3, 0x42, 0xb2, 0xbe, 0x36,
-	0x3c, 0x1a, 0x19, 0x96, 0x79, 0xa5, 0x7c, 0xa9, 0x93, 0xe5, 0x04, 0x1e, 0x43, 0x53, 0x16, 0x51,
-	0x17, 0xea, 0xd1, 0x52, 0xac, 0x6b, 0x90, 0x7a, 0xb4, 0x2c, 0x5d, 0xd6, 0xf7, 0x2e, 0x51, 0x0f,
-	0x1a, 0x69, 0x16, 0x2d, 0x68, 0xff, 0x68, 0xa8, 0x8d, 0xea, 0xa4, 0x10, 0xf8, 0x13, 0xc0, 0x4d,
-	0xbe, 0x55, 0xb7, 0x3b, 0x87, 0x96, 0xc4, 0xbb, 0x0a, 0xb7, 0x2f, 0xec, 0x08, 0x8b, 0x24, 0x8f,
-	0xb9, 0xc0, 0x36, 0x48, 0x21, 0x70, 0x07, 0x0c, 0x41, 0x60, 0x69, 0x12, 0x33, 0x8a, 0x03, 0x38,
-	0x21, 0x74, 0x15, 0x31, 0x4e, 0x33, 0x45, 0x1d, 0x80, 0x9e, 0x33, 0x9a, 0x55, 0xde, 0xad, 0xd4,
-	0xbb, 0x5e, 0x1a, 0x32, 0xf6, 0x2b, 0xc9, 0x96, 0xd2, 0x6d, 0xa9, 0x77, 0xfb, 0xe8, 0x26, 0x8c,
-	0xd6, 0xc2, 0x71, 0x8b, 0x14, 0x02, 0x8f, 0xc1, 0xdc, 0x2f, 0x28, 0x96, 0xa2, 0xb7, 0x70, 0xcc,
-	0x78, 0xc8, 0x73, 0x26, 0xf8, 0x5d, 0xeb, 0xb4, 0x7c, 0x36, 0x35, 0xea, 0x8b, 0x36, 0x91, 0x63,
-	0xf8, 0x16, 0xda, 0x5e, 0xb2, 0x8a, 0xe2, 0x7f, 0xb4, 0x88, 0x3f, 0x40, 0x47, 0x72, 0xa4, 0x93,
-	0xcb, 0x03, 0x27, 0xbd, 0xd2, 0x89, 0x98, 0x7b, 0x6a, 0xe3, 0xe2, 0x11, 0xba, 0x4f, 0x0d, 0xa2,
-	0x13, 0x30, 0x88, 0x33, 0x75, 0xfd, 0x07, 0x87, 0x04, 0xf3, 0x3b, 0xb3, 0x86, 0x86, 0x70, 0x5e,
-	0x16, 0x66, 0xf6, 0x17, 0x27, 0xb0, 0x3d, 0xe2, 0xd8, 0x93, 0x1f, 0x81, 0x3b, 0x0b, 0xbe, 0xfa,
-	0x8e, 0xa9, 0xa1, 0x57, 0x70, 0x56, 0x4e, 0xdc, 0xdb, 0xbe, 0xff, 0x7d, 0x4e, 0x26, 0x81, 0x3b,
-	0xfb, 0x66, 0x7b, 0xee, 0xc4, 0xac, 0x5f, 0xbc, 0x01, 0xa3, 0xb2, 0x1a, 0xb5, 0x41, 0xf7, 0xe6,
-	0x53, 0x77, 0x56, 0xd0, 0x4d, 0x68, 0x17, 0xea, 0xd6, 0x76, 0x3d, 0x67, 0x62, 0x6a, 0xd6, 0x18,
-	0x9a, 0xd3, 0x8c, 0x52, 0x4e, 0x33, 0x74, 0x0d, 0xba, 0x1f, 0x6e, 0x45, 0xb4, 0xd1, 0x8b, 0xf2,
-	0x1e, 0xd5, 0x9f, 0xc3, 0xe0, 0xff, 0xc3, 0x72, 0xba, 0xde, 0xe2, 0x9a, 0x75, 0x07, 0xba, 0x8c,
-	0x26, 0x43, 0x1f, 0xa1, 0xbd, 0x0b, 0x77, 0xa9, 0x4f, 0x9f, 0x45, 0x5a, 0xb2, 0x7a, 0x87, 0x8d,
-	0xdd, 0x31, 0x5c, 0xb3, 0x6c, 0x30, 0x1e, 0xb2, 0x30, 0x66, 0xe1, 0x82, 0x47, 0x49, 0x8c, 0x2c,
-	0x38, 0xba, 0xc9, 0xb7, 0x68, 0xbf, 0x79, 0x9f, 0xdf, 0x0a, 0xa2, 0x1a, 0xc9, 0x9a, 0xf5, 0x5b,
-	0x83, 0xa6, 0xbd, 0x10, 0x79, 0x45, 0xd7, 0xd0, 0x10, 0xef, 0x51, 0xb9, 0x52, 0x35, 0x0a, 0x83,
-	0x97, 0x87, 0x65, 0x45, 0x41, 0x36, 0xe8, 0xea, 0xdb, 0x42, 0xfd, 0x67, 0x09, 0x53, 0xe7, 0xcf,
-	0xfe, 0xd2, 0x51, 0x88, 0xc7, 0x63, 0xf1, 0xf7, 0xf2, 0xee, 0x4f, 0x00, 0x00, 0x00, 0xff, 0xff,
-	0x7d, 0x72, 0x4e, 0x5d, 0x6f, 0x04, 0x00, 0x00,
+	// 437 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x53, 0xc1, 0x6e, 0xd3, 0x40,
+	0x10, 0xcd, 0xba, 0x49, 0x63, 0xc6, 0x89, 0xb1, 0x46, 0x11, 0x4d, 0x23, 0x90, 0xcc, 0x9e, 0xa2,
+	0xaa, 0x14, 0xc9, 0xdc, 0xe0, 0x00, 0x56, 0x63, 0x8a, 0x55, 0x93, 0x54, 0x6b, 0x0a, 0xe2, 0x64,
+	0xdc, 0x64, 0x55, 0xf9, 0x90, 0xd8, 0x78, 0xd7, 0xe2, 0x13, 0xf8, 0x6d, 0xe4, 0xb5, 0xbd, 0x34,
+	0x8d, 0xe0, 0xe6, 0x37, 0xf3, 0xde, 0xd3, 0xcc, 0xbe, 0x31, 0x8c, 0xb7, 0xa9, 0xcc, 0xb7, 0xa9,
+	0xbc, 0x28, 0xca, 0x5c, 0xe6, 0x38, 0x6c, 0x21, 0x75, 0xc0, 0xbe, 0x29, 0xf3, 0x4d, 0xb5, 0x96,
+	0x8c, 0xff, 0xac, 0xb8, 0x90, 0xf4, 0x1d, 0x58, 0x6d, 0x25, 0xca, 0x84, 0xc4, 0x73, 0x30, 0x8b,
+	0x06, 0x8a, 0x29, 0x71, 0x8f, 0xe6, 0x96, 0xe7, 0x5c, 0x74, 0x5e, 0x9d, 0x52, 0x33, 0xe8, 0x25,
+	0x0c, 0xdb, 0x22, 0xda, 0x60, 0x64, 0x9b, 0x29, 0x71, 0xc9, 0x7c, 0xc0, 0x8c, 0x6c, 0x83, 0x08,
+	0xfd, 0x5d, 0xba, 0xe5, 0x53, 0xc3, 0x25, 0xf3, 0x27, 0x4c, 0x7d, 0xe3, 0x04, 0x06, 0x45, 0x99,
+	0xad, 0xf9, 0xf4, 0xc8, 0x25, 0x73, 0x83, 0x35, 0x80, 0x7e, 0x02, 0xdb, 0x5f, 0xaf, 0xf3, 0x6a,
+	0xd7, 0xcd, 0x84, 0x33, 0x30, 0x2b, 0xc1, 0x4b, 0xa5, 0x27, 0x4a, 0xaf, 0x71, 0xdd, 0x2b, 0x52,
+	0x21, 0x7e, 0xe5, 0xe5, 0xa6, 0xf5, 0xd6, 0x98, 0x5e, 0x82, 0xc3, 0xf8, 0x7d, 0x26, 0x24, 0x2f,
+	0x19, 0x17, 0x45, 0xbe, 0x13, 0x1c, 0x5f, 0xc3, 0xb1, 0x90, 0xa9, 0xac, 0x84, 0x72, 0xb2, 0xbd,
+	0x13, 0xbd, 0x4e, 0x47, 0x8d, 0x55, 0x9b, 0xb5, 0x34, 0xfa, 0x03, 0xc6, 0x51, 0x7e, 0x9f, 0xed,
+	0xb4, 0xc3, 0xf9, 0x23, 0x87, 0x89, 0x76, 0x50, 0xbc, 0x7d, 0x39, 0xbe, 0x84, 0x7e, 0x3d, 0xab,
+	0x9a, 0xcd, 0xf2, 0xc6, 0x9a, 0x7b, 0x2b, 0x78, 0xc9, 0x54, 0x8b, 0x52, 0xe8, 0xd7, 0xe8, 0x7f,
+	0x6b, 0x9e, 0xdd, 0x81, 0xbd, 0x3f, 0x1f, 0x3e, 0x05, 0x8b, 0x05, 0x57, 0x61, 0xfc, 0x25, 0x60,
+	0xc9, 0xea, 0xda, 0xe9, 0xa1, 0x0b, 0xcf, 0x75, 0x61, 0xe9, 0x7f, 0x0e, 0x12, 0x3f, 0x62, 0x81,
+	0xbf, 0xf8, 0x9e, 0x84, 0xcb, 0xe4, 0x36, 0x0e, 0x1c, 0x82, 0x2f, 0xe0, 0x54, 0x33, 0x6e, 0xfc,
+	0x38, 0xfe, 0xb6, 0x62, 0x8b, 0x24, 0x5c, 0x7e, 0xf5, 0xa3, 0x70, 0xe1, 0x18, 0x67, 0xaf, 0xc0,
+	0x7a, 0xb0, 0x01, 0x8e, 0xc0, 0x8c, 0x56, 0x57, 0xe1, 0xb2, 0x71, 0x77, 0x60, 0xd4, 0xa0, 0x8f,
+	0x7e, 0x18, 0x05, 0x0b, 0x87, 0x78, 0xd7, 0x60, 0xb6, 0x61, 0x0b, 0x7c, 0x0f, 0xa3, 0xfa, 0x5c,
+	0x34, 0x3e, 0x39, 0x38, 0x92, 0x26, 0xca, 0xd9, 0xe4, 0x71, 0xa3, 0x96, 0xd1, 0x9e, 0xf7, 0x9b,
+	0xc0, 0xb0, 0x4d, 0x1d, 0xdf, 0xc2, 0x40, 0xcd, 0xf1, 0xc0, 0x65, 0xff, 0x20, 0x66, 0xcf, 0xf6,
+	0x9f, 0xbc, 0x8b, 0x86, 0xf6, 0xf0, 0x03, 0x98, 0xdd, 0x3b, 0xfd, 0x5b, 0x7e, 0x7a, 0x90, 0xf9,
+	0x5f, 0x87, 0xbb, 0x63, 0xf5, 0x8b, 0xbc, 0xf9, 0x13, 0x00, 0x00, 0xff, 0xff, 0xcf, 0xcd, 0x3a,
+	0x7b, 0x33, 0x03, 0x00, 0x00,
 }

@@ -6,7 +6,7 @@ import (
 
 	"github.com/omgwtflaserguns/matomat-server/config"
 	pb "github.com/omgwtflaserguns/matomat-server/generated"
-	"github.com/omgwtflaserguns/matomat-server/service/greeter"
+	"github.com/omgwtflaserguns/matomat-server/service/account"
 	"github.com/omgwtflaserguns/matomat-server/service/product"
 	"github.com/op/go-logging"
 	"google.golang.org/grpc"
@@ -25,8 +25,8 @@ func CreateGrpcServer(wg *sync.WaitGroup) *grpc.Server {
 	}
 
 	server := grpc.NewServer()
-	pb.RegisterGreeterServer(server, &greeter.Service{})
 	pb.RegisterProductsServer(server, &product.Service{})
+	pb.RegisterAccountServer(server, &account.Service{})
 
 	reflection.Register(server)
 

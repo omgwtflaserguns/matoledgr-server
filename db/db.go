@@ -37,27 +37,6 @@ func createIfNotFound() bool {
 	return false
 }
 
-func initializeDatabase() {
-	logger.Debug("initializing db...")
-	_, err := DbCon.Exec("CREATE TABLE Product (" +
-		"id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-		"name VARCHAR(64), " +
-		"price REAL" +
-		");")
-
-	if err != nil {
-		logger.Panic(err)
-	}
-
-	logger.Debug("Inserting data...")
-	_, err = DbCon.Exec("INSERT INTO Product (name, price)" +
-		" VALUES ('Club Mate', 0.75);")
-
-	if err != nil {
-		logger.Panic(err)
-	}
-}
-
 func openDatabase() {
 	db, err := sql.Open("sqlite3", path)
 	if err != nil {
