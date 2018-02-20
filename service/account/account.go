@@ -26,26 +26,26 @@ func (s *Service) Register(ctx context.Context, in *pb.AccountRequest) (*pb.Regi
 
 	if len(in.Password) < conf.Security.MinimalPasswordLength {
 		logger.Debugf("Account: Register for user %s failed, password too short", in.Username)
-		return &pb.RegisterResponse{Status: pb.RegisterStatus_REGISTER_PASSWORD_INVALID}, nil
+		return &pb.RegisterResponse{Status: pb.RegisterStatus_REGISTER_FAILED_PASSWORD_INVALID}, nil
 	}
 
 	userExists, err := doesUserExist(in.Username)
 
 	if err != nil {
 		logger.Fatalf("Account: Register for user %s failed, doesUserExist returned error: %v", in.Username, err)
-		return nil, err
+		return &pb.RegisterResponse{Status: pb.RegisterStatus_REGISTER_FAILED}, nil
 	}
 
 	if userExists {
 		logger.Debugf("Account: Register for user %s failed, user exists", in.Username)
-		return &pb.RegisterResponse{Status: pb.RegisterStatus_REGISTER_NAME_ALREADY_IN_USE}, nil
+		return &pb.RegisterResponse{Status: pb.RegisterStatus_REGISTER_FAILED_NAME_ALREADY_IN_USE}, nil
 	}
 
 	err = createUser(in.Username, in.Password)
 
 	if err != nil {
 		logger.Fatalf("Account: Register for user %s failed, create User returned error: %v", in.Username, err)
-		return nil, err
+		return &pb.RegisterResponse{Status: pb.RegisterStatus_REGISTER_FAILED}, nil
 	}
 
 	logger.Debugf("Account: Register for user %s successful", in.Username)
