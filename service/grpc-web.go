@@ -1,15 +1,18 @@
-package main
+package service
 
 import (
 	"github.com/improbable-eng/grpc-web/go/grpcweb"
+	"github.com/omgwtflaserguns/matomat-server/config"
 	"github.com/rs/cors"
 	"google.golang.org/grpc"
 	"net/http"
+	"sync"
 	"time"
 )
 
-func wrapGrpcServer(grpcServer *grpc.Server) {
+func WrapGrpcServer(grpcServer *grpc.Server, wg *sync.WaitGroup) {
 
+	conf := config.GetConfig()
 	wrappedGrpc := grpcweb.WrapServer(grpcServer, grpcweb.WithAllowedRequestHeaders([]string{"*"}))
 
 	grpcHttpHandler := http.HandlerFunc(func(resp http.ResponseWriter, req *http.Request) {
@@ -29,11 +32,11 @@ func wrapGrpcServer(grpcServer *grpc.Server) {
 		// TODO harden this
 		AllowedOrigins: []string{"*"},
 		AllowedHeaders: []string{"X-Grpc-Web", "Content-Type"},
-		Debug:          config.debugCors,
+		Debug:          conf.DebugCors,
 	})
 
 	httpServer := &http.Server{
-		Addr:           config.grpcWeb.address,
+		Addr:           conf.GrpcWeb.Address,
 		Handler:        c.Handler(grpcHttpHandler),
 		ReadTimeout:    3 * time.Second,
 		WriteTimeout:   3 * time.Second,
@@ -43,12 +46,12 @@ func wrapGrpcServer(grpcServer *grpc.Server) {
 	}
 
 	wg.Add(1)
-	go runHttpServer(httpServer)
+	go runHttpServer(httpServer, wg)
 
-	logger.Debug("gRPC-web Server started at %s", config.grpcWeb.address)
+	logger.Debug("gRPC-web Server started at %s", conf.GrpcWeb.Address)
 }
 
-func runHttpServer(httpServer *http.Server) {
+func runHttpServer(httpServer *http.Server, wg *sync.WaitGroup) {
 	defer wg.Done()
 
 	err := httpServer.ListenAndServe()

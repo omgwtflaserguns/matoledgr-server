@@ -7,22 +7,26 @@ import (
 	"sync"
 
 	_ "github.com/mattn/go-sqlite3"
+	"github.com/omgwtflaserguns/matomat-server/config"
 	"github.com/omgwtflaserguns/matomat-server/db"
+	"github.com/omgwtflaserguns/matomat-server/service"
 	"github.com/op/go-logging"
 )
 
-var wg sync.WaitGroup
+var wg *sync.WaitGroup
 var logger = logging.MustGetLogger("log")
 var leveledBackend logging.LeveledBackend
+var conf config.Configuration
 
 func main() {
 	createLogger()
-	readConfig()
+	conf = config.GetConfig()
 	configureLogger()
 
-	dbCon = db.Connect(config.database.file)
-	grpcServer := createGrpcServer()
-	wrapGrpcServer(grpcServer)
+	db.Connect(conf.Database.File)
+	wg = &sync.WaitGroup{}
+	grpcServer := service.CreateGrpcServer(wg)
+	service.WrapGrpcServer(grpcServer, wg)
 
 	logger.Debug("startup complete, listening...")
 	wg.Wait()
@@ -30,7 +34,7 @@ func main() {
 
 func configureLogger() {
 	var level logging.Level
-	switch config.log.level {
+	switch conf.Log.Level {
 	case "CRITICAL":
 		level = logging.CRITICAL
 	case "ERROR":

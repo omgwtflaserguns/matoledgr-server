@@ -8,17 +8,17 @@ import (
 
 var path = ""
 var logger = logging.MustGetLogger("log")
+var DbCon *sql.DB
 
-func Connect(databasePath string) *sql.DB {
+func Connect(databasePath string) {
 	logger.Debugf("connecting to database %s", databasePath)
 	path = databasePath
 	isNewDB := createIfNotFound()
-	db := openDatabase()
+	openDatabase()
 	if isNewDB {
-		initializeDatabase(db)
+		initializeDatabase()
 	}
 	logger.Debug("database connected")
-	return db
 }
 
 func createIfNotFound() bool {
@@ -37,9 +37,9 @@ func createIfNotFound() bool {
 	return false
 }
 
-func initializeDatabase(db *sql.DB) {
+func initializeDatabase() {
 	logger.Debug("initializing db...")
-	_, err := db.Exec("CREATE TABLE Product (" +
+	_, err := DbCon.Exec("CREATE TABLE Product (" +
 		"id INTEGER PRIMARY KEY AUTOINCREMENT, " +
 		"name VARCHAR(64), " +
 		"price REAL" +
@@ -50,7 +50,7 @@ func initializeDatabase(db *sql.DB) {
 	}
 
 	logger.Debug("Inserting data...")
-	_, err = db.Exec("INSERT INTO Product (name, price)" +
+	_, err = DbCon.Exec("INSERT INTO Product (name, price)" +
 		" VALUES ('Club Mate', 0.75);")
 
 	if err != nil {
@@ -58,10 +58,10 @@ func initializeDatabase(db *sql.DB) {
 	}
 }
 
-func openDatabase() *sql.DB {
+func openDatabase() {
 	db, err := sql.Open("sqlite3", path)
 	if err != nil {
 		logger.Panic(err)
 	}
-	return db
+	DbCon = db
 }
