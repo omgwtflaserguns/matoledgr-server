@@ -8,9 +8,7 @@ import (
 var logger = logging.MustGetLogger("log")
 
 type ConfigLog struct {
-	Level     string
-	WriteFile bool
-	File      string
+	Level string
 }
 
 type ConfigGrpc struct {
@@ -55,9 +53,7 @@ func readConfig() *Configuration {
 
 	config := &Configuration{
 		Log: ConfigLog{
-			Level:     viper.GetString("log.level"),
-			WriteFile: viper.GetBool("log.writeFile"),
-			File:      viper.GetString("log.file"),
+			Level: viper.GetString("log.level"),
 		},
 		Grpc: ConfigGrpc{
 			Address: viper.GetString("grpc.address"),

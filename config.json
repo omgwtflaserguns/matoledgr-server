@@ -1,8 +1,6 @@
 {
   "log": {
-    "level" : "DEBUG",
-    "writeFile": true,
-    "file": "./log.txt"
+    "level" : "DEBUG"
   },
   "grpc": {
     "address": ":50015"
