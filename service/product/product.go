@@ -14,6 +14,8 @@ type Service struct{}
 
 func (s *Service) ListProducts(ctx context.Context, in *pb.ProductRequest) (*pb.ProductList, error) {
 	rows, err := db.DbCon.Query("SELECT id, name, price FROM PRODUCT")
+	defer rows.Close()
+
 	util.Check("Error at selecting products from db: %v", err)
 
 	products := []*pb.Product{}

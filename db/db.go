@@ -21,6 +21,11 @@ func Connect(databasePath string) {
 	logger.Debug("database connected")
 }
 
+func Close() {
+	DbCon.Close()
+	logger.Debug("database closed")
+}
+
 func createIfNotFound() bool {
 	logger.Debug("Searching databse in %s", path)
 	_, err := os.Stat(path)

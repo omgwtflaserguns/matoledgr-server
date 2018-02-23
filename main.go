@@ -11,6 +11,8 @@ import (
 	"github.com/omgwtflaserguns/matomat-server/db"
 	"github.com/omgwtflaserguns/matomat-server/service"
 	"github.com/op/go-logging"
+	"math/rand"
+	"time"
 )
 
 var wg *sync.WaitGroup
@@ -19,11 +21,15 @@ var leveledBackend logging.LeveledBackend
 var conf config.Configuration
 
 func main() {
+	rand.Seed(time.Now().UTC().UnixNano())
+
 	createLogger()
 	conf = config.GetConfig()
 	configureLogger()
 
 	db.Connect(conf.Database.File)
+	defer db.Close()
+
 	wg = &sync.WaitGroup{}
 	grpcServer := service.CreateGrpcServer(wg)
 	service.WrapGrpcServer(grpcServer, wg)

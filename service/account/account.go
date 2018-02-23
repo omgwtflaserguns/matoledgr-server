@@ -33,7 +33,7 @@ func (s *Service) Register(ctx context.Context, in *pb.AccountRequest) (*pb.Regi
 	userExists, err := doesUserExist(in.Username)
 
 	if err != nil {
-		logger.Fatalf("Account: Register for user %s failed, doesUserExist returned error: %v", in.Username, err)
+		logger.Errorf("Account: Register for user %s failed, doesUserExist returned error: %v", in.Username, err)
 		return &pb.RegisterResponse{Status: pb.RegisterStatus_REGISTER_FAILED}, nil
 	}
 
@@ -45,7 +45,7 @@ func (s *Service) Register(ctx context.Context, in *pb.AccountRequest) (*pb.Regi
 	err = createUser(in.Username, in.Password)
 
 	if err != nil {
-		logger.Fatalf("Account: Register for user %s failed, create User returned error: %v", in.Username, err)
+		logger.Errorf("Account: Register for user %s failed, create User returned error: %v", in.Username, err)
 		return &pb.RegisterResponse{Status: pb.RegisterStatus_REGISTER_FAILED}, nil
 	}
 
@@ -106,6 +106,7 @@ func doesUserExist(username string) (bool, error) {
 	rows, err := db.DbCon.Query("SELECT id "+
 		"FROM Account "+
 		"WHERE username = $1", username)
+	defer rows.Close()
 
 	if err != nil {
 		return false, err
@@ -119,6 +120,7 @@ func getUserByUsername(username string) (model.User, error) {
 	rows, err := db.DbCon.Query("SELECT id, username, hash "+
 		"FROM Account "+
 		"WHERE username = $1", username)
+	defer rows.Close()
 
 	if err != nil {
 		return user, err
