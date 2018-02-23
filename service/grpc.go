@@ -1,9 +1,6 @@
 package service
 
 import (
-	"log"
-	"net"
-
 	"github.com/omgwtflaserguns/matomat-server/config"
 	pb "github.com/omgwtflaserguns/matomat-server/generated"
 	"github.com/omgwtflaserguns/matomat-server/service/account"
@@ -11,6 +8,8 @@ import (
 	"github.com/op/go-logging"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
+	"log"
+	"net"
 	"sync"
 )
 

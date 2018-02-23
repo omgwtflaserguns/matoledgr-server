@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"github.com/omgwtflaserguns/matomat-server/auth"
 	"github.com/omgwtflaserguns/matomat-server/config"
 	"github.com/omgwtflaserguns/matomat-server/db"
 	pb "github.com/omgwtflaserguns/matomat-server/generated"
@@ -54,6 +55,9 @@ func (s *Service) Register(ctx context.Context, in *pb.AccountRequest) (*pb.Regi
 
 func (s *Service) Login(ctx context.Context, in *pb.AccountRequest) (*pb.LoginResponse, error) {
 
+	//TODO Das macht hier offensichtlich keinen sinn, nur für debugging
+	auth.EnsureAuthentication(ctx)
+
 	usr, err := getUserByUsername(in.Username)
 
 	if err != nil {
@@ -73,6 +77,12 @@ func (s *Service) Login(ctx context.Context, in *pb.AccountRequest) (*pb.LoginRe
 	}
 
 	logger.Debugf("Account: Login for user %s successful", in.Username)
+
+	err = auth.SetAuthCookie(ctx, usr.Id)
+	if err != nil {
+		logger.Errorf("Account: Setting cookie for user %s failed, error: %v", in.Username, err)
+	}
+
 	return &pb.LoginResponse{
 		Status: pb.LoginStatus_LOGIN_OK,
 		User:   &pb.User{Username: usr.Username},

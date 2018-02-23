@@ -13,7 +13,7 @@ import (
 func WrapGrpcServer(grpcServer *grpc.Server, wg *sync.WaitGroup) {
 
 	conf := config.GetConfig()
-	wrappedGrpc := grpcweb.WrapServer(grpcServer, grpcweb.WithAllowedRequestHeaders([]string{"*"}))
+	wrappedGrpc := grpcweb.WrapServer(grpcServer)
 
 	grpcHttpHandler := http.HandlerFunc(func(resp http.ResponseWriter, req *http.Request) {
 
@@ -29,10 +29,10 @@ func WrapGrpcServer(grpcServer *grpc.Server, wg *sync.WaitGroup) {
 	})
 
 	c := cors.New(cors.Options{
-		// TODO harden this
-		AllowedOrigins: []string{"*"},
-		AllowedHeaders: []string{"X-Grpc-Web", "Content-Type"},
-		Debug:          conf.DebugCors,
+		AllowedOrigins:   []string{"http://localhost", "https://matomat.de", "https://www.matomat.de"},
+		AllowedHeaders:   []string{"X-Grpc-Web", "Content-Type"},
+		AllowCredentials: true,
+		Debug:            conf.DebugCors,
 	})
 
 	httpServer := &http.Server{
