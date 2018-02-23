@@ -7,6 +7,7 @@ func initializeDatabase() {
 
 	initProduct()
 	initAccount()
+	initLogin()
 }
 
 func initProduct() {
@@ -14,8 +15,8 @@ func initProduct() {
 	_, err := DbCon.Exec(
 		"CREATE TABLE Product (" +
 			"id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-			"name VARCHAR(64), " +
-			"price REAL" +
+			"name VARCHAR(64) NOT NULL, " +
+			"price REAL NOT NULL" +
 			");")
 
 	util.Check("Error creating table product: %v", err)
@@ -32,9 +33,22 @@ func initAccount() {
 	_, err := DbCon.Exec(
 		"CREATE TABLE Account (" +
 			"id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-			"username VARCHAR(64), " +
-			"hash VARCHAR(60) COLLATE BINARY" +
+			"username VARCHAR(64) NOT NULL, " +
+			"hash VARCHAR(60) COLLATE BINARY NOT NULL" +
 			");")
 
 	util.Check("Error creating table account: %v", err)
+}
+
+func initLogin() {
+	logger.Debug("create table login")
+	_, err := DbCon.Exec(
+		"CREATE TABLE Login (" +
+			"cookie VARCHAR(128) PRIMARY KEY, " +
+			"accountId INTEGER, " +
+			"created TIMESTAMP NOT NULL, " +
+			"FOREIGN KEY(accountId) REFERENCES Account(id) " +
+			");")
+
+	util.Check("Error creating table login: %v", err)
 }
