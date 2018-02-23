@@ -3,10 +3,12 @@ package auth
 import (
 	"context"
 	"github.com/omgwtflaserguns/matomat-server/db"
+	"github.com/omgwtflaserguns/matomat-server/model"
 	"github.com/op/go-logging"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
+	"google.golang.org/grpc/status"
 	"math/rand"
 	"net/http"
 	"strings"
@@ -17,26 +19,41 @@ var logger = logging.MustGetLogger("log")
 
 const allowedLetters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
-func EnsureAuthentication(ctx context.Context) codes.Code {
+func EnsureAuthentication(ctx context.Context) (model.Login, error) {
 
 	md, _ := metadata.FromIncomingContext(ctx)
 
 	authCookie := md["cookie"]
 
 	if len(authCookie) == 0 {
-		return codes.Unauthenticated
+		return model.Login{}, status.Error(codes.Unauthenticated, "No auth cookie found, please login")
 	}
 
 	parts := strings.Split(authCookie[0], "=")
 
 	if len(parts) != 2 {
-		return codes.Unauthenticated
+		return model.Login{}, status.Error(codes.Unauthenticated, "No auth cookie found, please login")
 	}
 
 	cookieValue := parts[1]
-
 	logger.Debugf("Found Cookie: %s", cookieValue)
-	return codes.OK
+
+	row := db.DbCon.QueryRow("SELECT a.id, a.username, a.hash, l.cookie, l.created "+
+		"FROM Login l "+
+		"INNER JOIN Account a "+
+		"ON a.id = l.accountId "+
+		"WHERE l.cookie = $1", cookieValue)
+
+	usr := model.User{}
+	login := model.Login{}
+	login.User = usr
+	err := row.Scan(&usr.Id, &usr.Username, &usr.Hash, &login.Cookie, &login.Created)
+	if err != nil {
+		return model.Login{}, status.Error(codes.Unauthenticated, "No auth cookie found, please login")
+	}
+
+	logger.Debugf("Got login from db for account %s", login.User.Username)
+	return login, nil
 }
 
 func SetAuthCookie(ctx context.Context, accountId int32) error {

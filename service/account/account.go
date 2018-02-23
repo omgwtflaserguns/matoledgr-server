@@ -54,10 +54,6 @@ func (s *Service) Register(ctx context.Context, in *pb.AccountRequest) (*pb.Regi
 }
 
 func (s *Service) Login(ctx context.Context, in *pb.AccountRequest) (*pb.LoginResponse, error) {
-
-	//TODO Das macht hier offensichtlich keinen sinn, nur für debugging
-	auth.EnsureAuthentication(ctx)
-
 	usr, err := getUserByUsername(in.Username)
 
 	if err != nil {
