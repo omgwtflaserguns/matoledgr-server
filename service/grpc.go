@@ -5,6 +5,7 @@ import (
 	pb "github.com/omgwtflaserguns/matomat-server/generated"
 	"github.com/omgwtflaserguns/matomat-server/service/account"
 	"github.com/omgwtflaserguns/matomat-server/service/product"
+	"github.com/omgwtflaserguns/matomat-server/service/transaction"
 	"github.com/op/go-logging"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -27,6 +28,7 @@ func CreateGrpcServer(wg *sync.WaitGroup) *grpc.Server {
 
 	pb.RegisterProductsServer(server, &product.Service{})
 	pb.RegisterAccountServer(server, &account.Service{})
+	pb.RegisterTransactionsServer(server, &transaction.Service{})
 
 	reflection.Register(server)
 
