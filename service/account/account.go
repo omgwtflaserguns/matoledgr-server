@@ -81,7 +81,21 @@ func (s *Service) Login(ctx context.Context, in *pb.AccountRequest) (*pb.LoginRe
 
 	return &pb.LoginResponse{
 		Status: pb.LoginStatus_LOGIN_OK,
-		User:   &pb.User{Username: usr.Username},
+		User:   model.GetProtoUserFromUser(usr),
+	}, nil
+}
+
+func (s *Service) GetAccount(ctx context.Context, in *pb.GetAccountRequest) (*pb.GetAccountResponse, error) {
+
+	login, err := auth.EnsureAuthentication(ctx)
+
+	if err != nil {
+		return &pb.GetAccountResponse{Authenticated: false, User: nil}, nil
+	}
+
+	return &pb.GetAccountResponse{
+		Authenticated: true,
+		User:          model.GetProtoUserFromUser(login.User),
 	}, nil
 }
 
