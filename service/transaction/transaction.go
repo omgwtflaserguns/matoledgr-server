@@ -8,6 +8,7 @@ import (
 	"github.com/op/go-logging"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"time"
 )
 
 type Service struct{}
@@ -17,11 +18,12 @@ var logger = logging.MustGetLogger("log")
 func (s *Service) ListTransactions(ctx context.Context, in *pb.TransactionsRequest) (*pb.TransactionList, error) {
 	login, err := auth.EnsureAuthentication(ctx)
 	if err != nil {
-		return nil, err
+		return &pb.TransactionList{}, status.Error(codes.Unauthenticated, "No auth cookie found, please login")
 	}
 
 	rows, err := db.DbCon.Query("SELECT t.id, t.price, t.timestamp, p.id, p.name, p.price "+
-		"FROM AccountTransaction "+
+		"FROM AccountTransaction t "+
+		"INNER JOIN Product p ON t.productId = p.id "+
 		"WHERE accountId = $1", login.User.Id)
 	defer rows.Close()
 
@@ -47,5 +49,27 @@ func (s *Service) ListTransactions(ctx context.Context, in *pb.TransactionsReque
 }
 
 func (s *Service) Buy(ctx context.Context, in *pb.BuyRequest) (*pb.BuyResponse, error) {
-	return nil, nil
+	login, err := auth.EnsureAuthentication(ctx)
+	if err != nil {
+		return &pb.BuyResponse{}, status.Error(codes.Unauthenticated, "No auth cookie found, please login")
+	}
+
+	if in.ProductId < 1 {
+		return &pb.BuyResponse{}, status.Error(codes.InvalidArgument, "invalid product-id given")
+	}
+
+	res, err := db.DbCon.Exec("INSERT INTO AccountTransaction (accountId, productId, price, timestamp) "+
+		"SELECT $1, p.id, p.price, $2 "+
+		"FROM product p "+
+		"WHERE p.id = $3", login.User.Id, time.Now(), in.ProductId)
+
+	rows, err2 := res.RowsAffected()
+
+	if err != nil || err2 != nil || rows != 1 {
+		logger.Errorf("Error inserting new transaction into db for user %s and product %s: %v %v", login.User.Username, in.ProductId, err, err2)
+		return &pb.BuyResponse{}, status.Error(codes.Internal, "")
+	}
+
+	logger.Errorf("Error inserting new transaction into db: %v", err)
+	return &pb.BuyResponse{}, nil
 }

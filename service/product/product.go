@@ -34,7 +34,7 @@ func (s *Service) ListProducts(ctx context.Context, in *pb.ProductRequest) (*pb.
 
 		p := &pb.Product{}
 
-		err = rows.Scan(&p.Id, &p.Name, p.Price)
+		err = rows.Scan(&p.Id, &p.Name, &p.Price)
 		if err != nil {
 			logger.Errorf("Error scanning products from db: %v", err)
 			return &pb.ProductList{}, status.Error(codes.Internal, "")
