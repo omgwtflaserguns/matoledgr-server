@@ -36,23 +36,24 @@ func EnsureAuthentication(ctx context.Context) (model.Login, error) {
 	}
 
 	cookieValue := parts[1]
-	logger.Debugf("Found Cookie: %s", cookieValue)
+
+	maxAge := time.Now().AddDate(0, 0, -1)
 
 	row := db.DbCon.QueryRow("SELECT a.id, a.username, a.hash, l.cookie, l.created "+
 		"FROM Login l "+
 		"INNER JOIN Account a "+
 		"ON a.id = l.accountId "+
-		"WHERE l.cookie = $1", cookieValue)
+		"WHERE l.cookie = $1 AND l.created > $2", cookieValue, maxAge)
 
 	usr := model.User{}
 	login := model.Login{}
 	login.User = usr
-	err := row.Scan(&usr.Id, &usr.Username, &usr.Hash, &login.Cookie, &login.Created)
+	err := row.Scan(&login.User.Id, &login.User.Username, &login.User.Hash, &login.Cookie, &login.Created)
 	if err != nil {
 		return model.Login{}, status.Error(codes.Unauthenticated, "No auth cookie found, please login")
 	}
 
-	logger.Debugf("Got login from db for account %s", login.User.Username)
+	logger.Debugf("Got login from db for account %s for cookie %s", login.User.Username, cookieValue)
 	return login, nil
 }
 

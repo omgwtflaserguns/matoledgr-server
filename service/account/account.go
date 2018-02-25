@@ -93,6 +93,7 @@ func (s *Service) GetAccount(ctx context.Context, in *pb.GetAccountRequest) (*pb
 		return &pb.GetAccountResponse{Authenticated: false, User: nil}, nil
 	}
 
+	logger.Debugf("Account: GetAccount for user %s, found authentication", login.User.Username)
 	return &pb.GetAccountResponse{
 		Authenticated: true,
 		User:          model.GetProtoUserFromUser(login.User),
