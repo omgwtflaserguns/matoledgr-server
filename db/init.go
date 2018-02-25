@@ -8,6 +8,7 @@ func initializeDatabase() {
 	initProduct()
 	initAccount()
 	initLogin()
+	initTransaction()
 }
 
 func initProduct() {
@@ -45,10 +46,26 @@ func initLogin() {
 	_, err := DbCon.Exec(
 		"CREATE TABLE Login (" +
 			"cookie VARCHAR(128) PRIMARY KEY, " +
-			"accountId INTEGER, " +
+			"accountId INTEGER NOT NULL, " +
 			"created TIMESTAMP NOT NULL, " +
 			"FOREIGN KEY(accountId) REFERENCES Account(id) " +
 			");")
 
 	util.Check("Error creating table login: %v", err)
+}
+
+func initTransaction() {
+	logger.Debug("create table transaction")
+	_, err := DbCon.Exec(
+		"CREATE TABLE AccountTransaction ( " +
+			"id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+			"accountId INTEGER NOT NULL, " +
+			"productId INTEGER NOT NULL, " +
+			"price REAL NOT NULL, " +
+			"timestamp TIMESTAMP NOT NULL, " +
+			"FOREIGN KEY(accountId) REFERENCES Account(id), " +
+			"FOREIGN KEY(productId) REFERENCES Product(id) " +
+			");")
+
+	util.Check("Error creating table transaction: %v", err)
 }

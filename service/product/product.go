@@ -5,8 +5,9 @@ import (
 	"github.com/omgwtflaserguns/matomat-server/auth"
 	"github.com/omgwtflaserguns/matomat-server/db"
 	pb "github.com/omgwtflaserguns/matomat-server/generated"
-	"github.com/omgwtflaserguns/matomat-server/util"
 	"github.com/op/go-logging"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 var logger = logging.MustGetLogger("log")
@@ -17,24 +18,28 @@ func (s *Service) ListProducts(ctx context.Context, in *pb.ProductRequest) (*pb.
 
 	_, err := auth.EnsureAuthentication(ctx)
 	if err != nil {
-		return nil, err
+		return &pb.ProductList{}, status.Error(codes.Unauthenticated, "No auth cookie found, please login")
 	}
 
 	rows, err := db.DbCon.Query("SELECT id, name, price FROM PRODUCT")
 	defer rows.Close()
 
-	util.Check("Error at selecting products from db: %v", err)
+	if err != nil {
+		logger.Errorf("Error at selecting products from db: %v", err)
+		return &pb.ProductList{}, status.Error(codes.Internal, "")
+	}
 
 	products := []*pb.Product{}
 	for rows.Next() {
 
-		var id int32
-		var name string
-		var price float32
+		p := &pb.Product{}
 
-		err = rows.Scan(&id, &name, &price)
-		util.Check("Scan failed: %v", err)
-		products = append(products, &pb.Product{Id: id, Name: name, Price: price})
+		err = rows.Scan(&p.Id, &p.Name, p.Price)
+		if err != nil {
+			logger.Errorf("Error scanning products from db: %v", err)
+			return &pb.ProductList{}, status.Error(codes.Internal, "")
+		}
+		products = append(products, p)
 	}
 	return &pb.ProductList{Products: products}, nil
 }
