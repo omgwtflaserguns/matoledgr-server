@@ -1,5 +1,7 @@
 # Matomat-server
 
+[![Maintainability](https://api.codeclimate.com/v1/badges/7513a48ef0f203220eae/maintainability)](https://codeclimate.com/github/omgwtflaserguns/matomat-server/maintainability)
+
 go grpc und grpc-web server
 
 ## setup project
