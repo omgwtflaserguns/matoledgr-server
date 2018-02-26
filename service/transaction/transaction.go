@@ -61,7 +61,7 @@ func (s *Service) Buy(ctx context.Context, in *pb.BuyRequest) (*pb.BuyResponse, 
 	res, err := db.DbCon.Exec("INSERT INTO AccountTransaction (accountId, productId, price, timestamp) "+
 		"SELECT $1, p.id, p.price, $2 "+
 		"FROM product p "+
-		"WHERE p.id = $3", login.User.Id, time.Now(), in.ProductId)
+		"WHERE p.isActive = 1 AND p.id = $3", login.User.Id, time.Now(), in.ProductId)
 
 	rows, err2 := res.RowsAffected()
 

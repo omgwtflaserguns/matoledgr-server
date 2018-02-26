@@ -21,7 +21,9 @@ func (s *Service) ListProducts(ctx context.Context, in *pb.ProductRequest) (*pb.
 		return &pb.ProductList{}, status.Error(codes.Unauthenticated, "No auth cookie found, please login")
 	}
 
-	rows, err := db.DbCon.Query("SELECT id, name, price FROM PRODUCT")
+	rows, err := db.DbCon.Query("SELECT p.id, p.name, p.price " +
+		"FROM Product p " +
+		"WHERE p.isActive = 1")
 	defer rows.Close()
 
 	if err != nil {
@@ -41,5 +43,6 @@ func (s *Service) ListProducts(ctx context.Context, in *pb.ProductRequest) (*pb.
 		}
 		products = append(products, p)
 	}
+	logger.Debugf("Returning Products: %v", products)
 	return &pb.ProductList{Products: products}, nil
 }

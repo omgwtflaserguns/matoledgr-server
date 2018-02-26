@@ -8,6 +8,7 @@ func initializeDatabase() {
 	initProduct()
 	initAccount()
 	initLogin()
+	initPayment()
 	initTransaction()
 }
 
@@ -17,7 +18,8 @@ func initProduct() {
 		"CREATE TABLE Product (" +
 			"id INTEGER PRIMARY KEY AUTOINCREMENT, " +
 			"name VARCHAR(64) NOT NULL, " +
-			"price REAL NOT NULL" +
+			"price REAL NOT NULL, " +
+			"isActive INTEGER NOT NULL DEFAULT 1 " +
 			");")
 
 	util.Check("Error creating table product: %v", err)
@@ -54,6 +56,20 @@ func initLogin() {
 	util.Check("Error creating table login: %v", err)
 }
 
+func initPayment() {
+	logger.Debug("create table payment")
+	_, err := DbCon.Exec(
+		"CREATE TABLE Payment ( " +
+			"id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+			"accountId INTEGER NOT NULL, " +
+			"value REAL NOT NULL, " +
+			"timestamp TIMESTAMP NOT NULL, " +
+			"FOREIGN KEY(accountId) REFERENCES Account(id) " +
+			");")
+
+	util.Check("Error creating table payment: %v", err)
+}
+
 func initTransaction() {
 	logger.Debug("create table transaction")
 	_, err := DbCon.Exec(
@@ -61,10 +77,12 @@ func initTransaction() {
 			"id INTEGER PRIMARY KEY AUTOINCREMENT, " +
 			"accountId INTEGER NOT NULL, " +
 			"productId INTEGER NOT NULL, " +
+			"paymentId INTEGER, " +
 			"price REAL NOT NULL, " +
 			"timestamp TIMESTAMP NOT NULL, " +
 			"FOREIGN KEY(accountId) REFERENCES Account(id), " +
 			"FOREIGN KEY(productId) REFERENCES Product(id) " +
+			"FOREIGN KEY(paymentId) REFERENCES Payment(id) " +
 			");")
 
 	util.Check("Error creating table transaction: %v", err)
